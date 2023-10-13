@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="SwingMSystem">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/SwingMSystem.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
