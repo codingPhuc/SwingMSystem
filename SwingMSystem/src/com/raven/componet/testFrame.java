@@ -4,6 +4,19 @@
  */
 package com.raven.componet;
 
+import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.Color;
+import javax.swing.UIManager;
+import net.miginfocom.swing.MigLayout;
+import com.EventInterface.EventMenuItemSelected;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTarget;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
+
 /**
  *
  * @author konod
@@ -13,10 +26,125 @@ public class testFrame extends javax.swing.JFrame {
     /**
      * Creates new form NewJFrame1
      */
+    private MigLayout layout;
+    private  Animator  animator ; 
     public testFrame() {
-        initComponents();
+          try {
+        UIManager.setLookAndFeel(new FlatLightLaf());
+    } catch (Exception ex) {
+        System.err.println("Failed to initialize LaF");
     }
 
+        initComponents();
+        init();
+        
+        
+    }
+    
+    private void init()
+    {   Color transparentWhite = new Color(255, 255, 255, 128);
+        background.setBackground(transparentWhite);
+        layout = new MigLayout("fill", "[]10[100%, fill]10", "10[fill, top]10");
+        background.setLayout(layout);
+        mainPanel.setLayout(new CardLayout());
+        mainPanel.add(homePanel1 , 0) ; 
+        mainPanel.add(studentPanel1 , 1) ; 
+        mainPanel.add(reportPanel1 ,  2) ;
+
+        
+//        sideBar.setEventSelect(new EventMenuItemSelected() {
+//            @Override
+//            public void menuSelected(int menuIndex) {
+//                System.out.println(menuIndex);
+//                System.out.println("Menu Index : " + menuIndex + " SubMenu Index " );
+//                if (menuIndex == 0) {
+//                             mainPanel.setBackground(Color.blue);
+//                }
+//            }
+//
+//        });
+
+        sideBar.setEventSelect(new EventMenuItemSelected() {
+        @Override
+        public void menuSelected(int menuIndex) {
+        System.out.println("Menu Index: " + menuIndex);
+        switch (menuIndex) {
+            case 0:
+                mainPanel.removeAll();
+                mainPanel.add(homePanel1, BorderLayout.CENTER);
+                break;
+            case 1:
+                mainPanel.removeAll();
+                mainPanel.add(studentPanel1, BorderLayout.CENTER);
+                break;
+            case 2:
+                // Add more cases for other menu items as needed
+                break;
+            case 3:
+                mainPanel.removeAll();
+                mainPanel.add(reportPanel1, BorderLayout.CENTER);
+                break;
+            default:
+                // Handle cases that are not explicitly defined
+                break;
+        }
+        mainPanel.revalidate();
+        mainPanel.repaint();
+        }   
+    });
+
+
+
+
+
+
+        sideBar.initMenuItem();
+      
+        background.add(sideBar, "w 230!, spany 2");    // Span Y 2cell
+        background.add(header, "h 50, wrap 2");
+        background.add(mainPanel, "w 90%, h 90%");
+        
+        
+        
+        TimingTarget target = new TimingTargetAdapter() {
+            @Override
+            public void timingEvent(float fraction) {
+                double width;
+                if (sideBar.isShowMenu()) {
+                    width = 80 + (170 * (1f - fraction));
+                } else {
+                    width = 80 + (170 * fraction);
+                }
+                layout.setComponentConstraints(sideBar, "w " + width + "!, spany2");
+                sideBar.revalidate();
+            }
+
+            @Override
+            public void end() {
+                sideBar.setShowMenu(!sideBar.isShowMenu());
+//                sideBar.setShowMenu(true);
+            }
+
+        };
+        animator = new Animator(500, target);
+        animator.setResolution(0);
+        animator.setDeceleration(0.5f);
+        animator.setAcceleration(0.5f);
+        
+        
+        // pass in the action interface to the menu 
+        header.addMenuEvent(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (!animator.isRunning()) {
+                    animator.start();
+                }
+               
+            
+            }
+        });
+    }
+                
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -26,10 +154,28 @@ public class testFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
+        mainPanel = new javax.swing.JPanel();
+        jScrollPane = new javax.swing.JScrollPane();
         table1 = new com.raven.swing.table.Table();
+        sideBar = new com.raven.componet.SideBar();
+        header = new com.raven.componet.header();
+        studentPanel1 = new com.raven.componet.UserPanel();
+        reportPanel1 = new com.raven.componet.ReportPanel();
+        homePanel1 = new com.raven.componet.HomePanel();
+        background = new javax.swing.JPanel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        mainPanel.setBackground(new java.awt.Color(245, 245, 245));
+
+        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
+        mainPanel.setLayout(mainPanelLayout);
+        mainPanelLayout.setHorizontalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 238, Short.MAX_VALUE)
+        );
+        mainPanelLayout.setVerticalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 144, Short.MAX_VALUE)
+        );
 
         table1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -42,26 +188,29 @@ public class testFrame extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(table1);
+        jScrollPane.setViewportView(table1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(76, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39))
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+
+        background.setBackground(new java.awt.Color(245, 245, 245));
+        background.setOpaque(false);
+
+        javax.swing.GroupLayout backgroundLayout = new javax.swing.GroupLayout(background);
+        background.setLayout(backgroundLayout);
+        backgroundLayout.setHorizontalGroup(
+            backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1366, Short.MAX_VALUE)
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(72, 72, 72)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(102, Short.MAX_VALUE))
+        backgroundLayout.setVerticalGroup(
+            backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 814, Short.MAX_VALUE)
         );
+
+        getContentPane().add(background, java.awt.BorderLayout.CENTER);
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -91,6 +240,12 @@ public class testFrame extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
+        
+       try {
+    UIManager.setLookAndFeel( new FlatLightLaf() );
+} catch( Exception ex ) {
+    System.err.println( "Failed to initialize LaF" );
+}
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -101,7 +256,14 @@ public class testFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel background;
+    private com.raven.componet.header header;
+    private com.raven.componet.HomePanel homePanel1;
+    private javax.swing.JScrollPane jScrollPane;
+    private javax.swing.JPanel mainPanel;
+    private com.raven.componet.ReportPanel reportPanel1;
+    private com.raven.componet.SideBar sideBar;
+    private com.raven.componet.UserPanel studentPanel1;
     private com.raven.swing.table.Table table1;
     // End of variables declaration//GEN-END:variables
 }

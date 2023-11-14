@@ -1,32 +1,38 @@
 package com.raven.swing.table;
 
+import com.model.ModelActionUser;
+import com.model.ModelUser;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.plaf.basic.BasicSliderUI;
 
+// the model action contain the button you must pass the Event that you want each action to perform
 public class Action extends javax.swing.JPanel {
-
-    public Action(ModelAction data) {
+    private ModelUser user;
+    public Action(ModelActionUser data) {
         initComponents();
         setOpaque(false);
+        this.user = data.getUser();
         cmdEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                data.getEvent().update(data.getStudent());
+               
+                data.getEvent().update(data.getUser());
             }
         });
         cmdDelete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                data.getEvent().delete(data.getStudent());
+             
+                data.getEvent().delete(user);
             }
         });
         cmdView.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                data.getEvent().view(data.getStudent());
+                data.getEvent().view(data.getUser());
             }
         });
     }
@@ -43,39 +49,29 @@ public class Action extends javax.swing.JPanel {
     private void initComponents() {
 
         cmdDelete = new com.raven.swing.ActionButton();
-        cmdEdit = new com.raven.swing.ActionButton();
         cmdView = new com.raven.swing.ActionButton();
+        cmdEdit = new com.raven.swing.ActionButton();
 
-        cmdDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com.raven.Icon/delete.png"))); // NOI18N
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
-        cmdEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com.raven.Icon/edit.png"))); // NOI18N
+        cmdDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/Icon/TableDeleteAction.png"))); // NOI18N
+        cmdDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdDeleteActionPerformed(evt);
+            }
+        });
+        add(cmdDelete);
 
-        cmdView.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com.raven.Icon/view.png"))); // NOI18N
+        cmdView.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/Icon/TableViewAction.png"))); // NOI18N
+        add(cmdView);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(cmdEdit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmdDelete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmdView, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(cmdDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cmdEdit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cmdView, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        cmdEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/Icon/TableeditAction.png"))); // NOI18N
+        add(cmdEdit);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cmdDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdDeleteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmdDeleteActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.raven.swing.ActionButton cmdDelete;

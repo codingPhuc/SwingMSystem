@@ -28,11 +28,149 @@ public class NewJFrame extends javax.swing.JFrame {
 
         newJPanel1 = new Testingpackage.NewJPanel();
         newJPanel21 = new Testingpackage.newJPanel2();
+        blackGradientPaint1 = new PaintComponent.LightBule();
+        lightBule2 = new PaintComponent.LightBule();
+        jLabel1 = new javax.swing.JLabel();
+        organGradientPaint1 = new PaintComponent.OrganGradientPaint();
+        jLabel3 = new javax.swing.JLabel();
+        organGradientPaint2 = new PaintComponent.OrganGradientPaint();
+        jLabel2 = new javax.swing.JLabel();
+        lightBule1 = new PaintComponent.LightBule();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.CardLayout());
-        getContentPane().add(newJPanel1, "card2");
-        getContentPane().add(newJPanel21, "card3");
+
+        javax.swing.GroupLayout blackGradientPaint1Layout = new javax.swing.GroupLayout(blackGradientPaint1);
+        blackGradientPaint1.setLayout(blackGradientPaint1Layout);
+        blackGradientPaint1Layout.setHorizontalGroup(
+            blackGradientPaint1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1059, Short.MAX_VALUE)
+        );
+        blackGradientPaint1Layout.setVerticalGroup(
+            blackGradientPaint1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 777, Short.MAX_VALUE)
+        );
+
+        jLabel1.setText("jLabel1");
+
+        javax.swing.GroupLayout lightBule2Layout = new javax.swing.GroupLayout(lightBule2);
+        lightBule2.setLayout(lightBule2Layout);
+        lightBule2Layout.setHorizontalGroup(
+            lightBule2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(lightBule2Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addComponent(jLabel1)
+                .addContainerGap(46, Short.MAX_VALUE))
+        );
+        lightBule2Layout.setVerticalGroup(
+            lightBule2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, lightBule2Layout.createSequentialGroup()
+                .addContainerGap(49, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(35, 35, 35))
+        );
+
+        jLabel3.setText("jLabel3");
+
+        javax.swing.GroupLayout organGradientPaint1Layout = new javax.swing.GroupLayout(organGradientPaint1);
+        organGradientPaint1.setLayout(organGradientPaint1Layout);
+        organGradientPaint1Layout.setHorizontalGroup(
+            organGradientPaint1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(organGradientPaint1Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(jLabel3)
+                .addContainerGap(49, Short.MAX_VALUE))
+        );
+        organGradientPaint1Layout.setVerticalGroup(
+            organGradientPaint1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, organGradientPaint1Layout.createSequentialGroup()
+                .addContainerGap(67, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addGap(17, 17, 17))
+        );
+
+        jLabel2.setText("jLabel2");
+
+        javax.swing.GroupLayout organGradientPaint2Layout = new javax.swing.GroupLayout(organGradientPaint2);
+        organGradientPaint2.setLayout(organGradientPaint2Layout);
+        organGradientPaint2Layout.setHorizontalGroup(
+            organGradientPaint2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(organGradientPaint2Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(jLabel2)
+                .addContainerGap(37, Short.MAX_VALUE))
+        );
+        organGradientPaint2Layout.setVerticalGroup(
+            organGradientPaint2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(organGradientPaint2Layout.createSequentialGroup()
+                .addGap(41, 41, 41)
+                .addComponent(jLabel2)
+                .addContainerGap(43, Short.MAX_VALUE))
+        );
+
+        jLabel4.setText("jLabel4");
+
+        javax.swing.GroupLayout lightBule1Layout = new javax.swing.GroupLayout(lightBule1);
+        lightBule1.setLayout(lightBule1Layout);
+        lightBule1Layout.setHorizontalGroup(
+            lightBule1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(lightBule1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addContainerGap(57, Short.MAX_VALUE))
+        );
+        lightBule1Layout.setVerticalGroup(
+            lightBule1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(lightBule1Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(jLabel4)
+                .addContainerGap(62, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(96, 96, 96)
+                        .addComponent(lightBule1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(58, 58, 58)
+                        .addComponent(lightBule2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(197, 197, 197)
+                        .addComponent(organGradientPaint2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(106, 106, 106)
+                        .addComponent(organGradientPaint1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(454, 454, 454)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(newJPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1059, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(newJPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, 1059, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(blackGradientPaint1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(newJPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 777, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(newJPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, 777, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(blackGradientPaint1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(187, 187, 187)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lightBule2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lightBule1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(85, 85, 85)
+                        .addComponent(organGradientPaint1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(72, 72, 72)
+                        .addComponent(organGradientPaint2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -73,7 +211,16 @@ public class NewJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private PaintComponent.LightBule blackGradientPaint1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private PaintComponent.LightBule lightBule1;
+    private PaintComponent.LightBule lightBule2;
     private Testingpackage.NewJPanel newJPanel1;
     private Testingpackage.newJPanel2 newJPanel21;
+    private PaintComponent.OrganGradientPaint organGradientPaint1;
+    private PaintComponent.OrganGradientPaint organGradientPaint2;
     // End of variables declaration//GEN-END:variables
 }
