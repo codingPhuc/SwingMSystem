@@ -2,7 +2,6 @@ package com.model;
 
 
 import com.EventInterface.EventActionStudent;
-import com.EventInterface.EventActionUser;
 
 // contain the student and what should the event be doing with the action 
 public class ModelActionStudent {

@@ -4,6 +4,7 @@
  */
 package com.raven.componet;
 
+import com.model.ModelUser;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.border.EmptyBorder;
@@ -17,12 +18,19 @@ public class header extends javax.swing.JPanel {
     /**
      * Creates new form header
      */
-    
-    public header() {
-        initComponents();
-       ImageIcon icon = new ImageIcon(getClass().getResource("/com/Icon/profile.jpg"));
-       imageAvatar1.setIcon(icon);
+    private ModelUser LoginUser; 
+   
+    public header(ModelUser LoginUser) {
+      initComponents();
+      this.LoginUser = LoginUser ; 
+      
+       init();
         
+    }
+    private void init() {
+        jLabel1.setText(LoginUser.getUserName());
+        ImageIcon icon = new ImageIcon(LoginUser.getProfilePicture());
+        imageAvatar1.setIcon(icon);
     }
     
     
@@ -44,7 +52,7 @@ public class header extends javax.swing.JPanel {
 
         imageAvatar1.setPreferredSize(new java.awt.Dimension(48, 48));
 
-        MenuButtons.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/Icon/menu.png"))); // NOI18N
+        MenuButtons.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/ResourceImage/Header_MenuButton.png"))); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Phuc Nguyen");
@@ -81,4 +89,6 @@ public class header extends javax.swing.JPanel {
     void addMenuEvent(ActionListener actionListener) {
          MenuButtons.addActionListener(actionListener); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+    
 }

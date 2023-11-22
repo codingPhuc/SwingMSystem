@@ -1,7 +1,11 @@
 package main;
 
+import com.Dao.LoginHistoryDao;
+import com.Dao.UserDao;
+import com.model.ModelUser;
 import com.raven.componet.testFrame;
 import java.awt.Color;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -12,9 +16,11 @@ public class Login extends javax.swing.JFrame {
     /**
      * Creates new form Login
      */
+    private LoginHistoryDao loginHistoryDao ; 
     public Login() {
         initComponents();
         setBackground(new Color(0, 0, 0, 0));
+        loginHistoryDao = new LoginHistoryDao() ; 
     }
 
     /**
@@ -32,6 +38,7 @@ public class Login extends javax.swing.JFrame {
         txtPassword = new swing.PasswordField();
         jLabel1 = new javax.swing.JLabel();
         cmdLogin = new swing.Button();
+        ErrorTextFlied = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -58,18 +65,26 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
+        ErrorTextFlied.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        ErrorTextFlied.setForeground(new java.awt.Color(255, 51, 51));
+
         javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
         panel.setLayout(panelLayout);
         panelLayout.setHorizontalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelLayout.createSequentialGroup()
-                .addGap(60, 60, 60)
-                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmdLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelLayout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmdLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(panelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(ErrorTextFlied, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
         panelLayout.setVerticalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -82,7 +97,9 @@ public class Login extends javax.swing.JFrame {
                 .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addComponent(cmdLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ErrorTextFlied, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                .addGap(19, 19, 19))
         );
 
         javax.swing.GroupLayout backgroundLayout = new javax.swing.GroupLayout(background);
@@ -116,28 +133,32 @@ public class Login extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-    
-    
-    private boolean authenticate(String username, String password) {
-    // Replace this with your authentication logic (e.g., check against a database)
-    // For demonstration purposes, hardcoding a sample username and password
-    return "admin".equals(username) && "admin123".equals(password);
+  private void updateLoginHistory(int userID) {
+    // Update the login history for the specified user
+    loginHistoryDao.addLoginHistory(userID, new java.sql.Timestamp(System.currentTimeMillis()));
 }
+   
     private void cmdLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdLoginActionPerformed
        String user = txtUser.getText();
     String pass = String.valueOf(txtPassword.getPassword());
 
-    // Check the username and password (replace this with your authentication logic)
-    if (authenticate(user, pass)) {
+    // Check the username and password against the database
+    UserDao userDao = new UserDao();
+    ModelUser loginUser = userDao.authenticate(user, pass);
+
+    if (loginUser != null) {
         // Open the TestFrame upon successful login
-        testFrame testFrame = new testFrame();
+        testFrame testFrame = new testFrame(loginUser);
         testFrame.setVisible(true);
+
+        // Update the login history for the logged-in user
+        updateLoginHistory(loginUser.getUserID());
 
         // Close the login frame
         dispose();
     } else {
-        // Show an error message or take appropriate action for incorrect credentials
-        System.out.println("Incorrect username or password");
+        // Show an error message for incorrect credentials
+        ErrorTextFlied.setText("Incorrect username or password");
     }
     }//GEN-LAST:event_cmdLoginActionPerformed
 
@@ -177,6 +198,7 @@ public class Login extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel ErrorTextFlied;
     private login.Background background;
     private swing.Button cmdLogin;
     private javax.swing.JLabel jLabel1;

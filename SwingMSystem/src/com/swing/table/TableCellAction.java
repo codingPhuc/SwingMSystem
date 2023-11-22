@@ -1,4 +1,4 @@
-package com.raven.swing.table;
+package com.swing.table;
 
 
 import com.model.ModelActionUser;

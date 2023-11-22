@@ -4,13 +4,16 @@
  */
 package com.raven.componet;
 
+import com.ActionPanel.HomePanel;
+import com.ActionPanel.ReportPanel;
+import com.ActionPanel.UserPanel;
+import com.ActionPanel.mainPanel;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 import com.EventInterface.EventMenuItemSelected;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
+import com.model.ModelUser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.jdesktop.animation.timing.Animator;
@@ -28,73 +31,74 @@ public class testFrame extends javax.swing.JFrame {
      */
     private MigLayout layout;
     private  Animator  animator ; 
-    public testFrame() {
+    private  mainPanel  mainPanel ;
+    private ModelUser LoginUser ;
+    public testFrame(ModelUser LoginUser) {
           try {
         UIManager.setLookAndFeel(new FlatLightLaf());
     } catch (Exception ex) {
         System.err.println("Failed to initialize LaF");
     }
+        this.LoginUser =LoginUser ; 
 
         initComponents();
         init();
         
         
     }
+//    private void showForm(JPanel form) {
+//         System.out.println("Showing form: " + form.getClass().getSimpleName());
+//    mainPanel.removeAll();
+//    mainPanel.add(form, BorderLayout.CENTER);
+//    mainPanel.revalidate();
+//    mainPanel.repaint();
+//}
     
-    private void init()
-    {   Color transparentWhite = new Color(255, 255, 255, 128);
-        background.setBackground(transparentWhite);
-        layout = new MigLayout("fill", "[]10[100%, fill]10", "10[fill, top]10");
-        background.setLayout(layout);
-        mainPanel.setLayout(new CardLayout());
-        mainPanel.add(homePanel1 , 0) ; 
-        mainPanel.add(studentPanel1 , 1) ; 
-        mainPanel.add(reportPanel1 ,  2) ;
+ private void init() {
+    
+    // Set transparent white color
+    Color transparentWhite = new Color(242,242,242, 128);
+    background.setBackground(transparentWhite);
 
-        
-//        sideBar.setEventSelect(new EventMenuItemSelected() {
-//            @Override
-//            public void menuSelected(int menuIndex) {
-//                System.out.println(menuIndex);
-//                System.out.println("Menu Index : " + menuIndex + " SubMenu Index " );
-//                if (menuIndex == 0) {
-//                             mainPanel.setBackground(Color.blue);
-//                }
-//            }
-//
-//        });
+    // Create MigLayout with specific constraints
+    layout = new MigLayout("fill", "[]10[100%, fill]10", "5[fill, top]5");
+    background.setLayout(layout);
 
-        sideBar.setEventSelect(new EventMenuItemSelected() {
+    // Initialize mainPanel
+    mainPanel = new mainPanel();
+
+    // Set event for menu selection in sideBar
+    sideBar.setEventSelect(new EventMenuItemSelected() {
         @Override
         public void menuSelected(int menuIndex) {
-        System.out.println("Menu Index: " + menuIndex);
-        switch (menuIndex) {
-            case 0:
-                mainPanel.removeAll();
-                mainPanel.add(homePanel1, BorderLayout.CENTER);
-                break;
-            case 1:
-                mainPanel.removeAll();
-                mainPanel.add(studentPanel1, BorderLayout.CENTER);
-                break;
-            case 2:
+            // Handle menu selection based on index
+            switch (menuIndex) {
+                case 0:
+                    // Show HomePanel when menu item 0 is selected
+                    mainPanel.showForm(new HomePanel());
+                    break;
+                case 1:
+                    // Show UserPanel when menu item 1 is selected
+                    mainPanel.showForm(new UserPanel());
+                    break;
+                case 2:
+                    // Add more cases for other sub-menu items as needed
+                    break;
+                case 3:
+                    // Show ReportPanel when menu item 3 is selected
+                    mainPanel.showForm(new ReportPanel());
+                    break;
                 // Add more cases for other menu items as needed
-                break;
-            case 3:
-                mainPanel.removeAll();
-                mainPanel.add(reportPanel1, BorderLayout.CENTER);
-                break;
-            default:
-                // Handle cases that are not explicitly defined
-                break;
+                default:
+                    // Handle cases that are not explicitly defined
+                    break;
+            }
         }
-        mainPanel.revalidate();
-        mainPanel.repaint();
-        }   
     });
 
 
 
+   
 
 
 
@@ -104,7 +108,7 @@ public class testFrame extends javax.swing.JFrame {
         background.add(header, "h 50, wrap 2");
         background.add(mainPanel, "w 90%, h 90%");
         
-        
+         mainPanel.showForm(new HomePanel());
         
         TimingTarget target = new TimingTargetAdapter() {
             @Override
@@ -143,6 +147,12 @@ public class testFrame extends javax.swing.JFrame {
             
             }
         });
+        // set the side bar text and the header text of the application 
+        String roleString = (LoginUser.getUserRole() == 0) ? "Manager" : (LoginUser.getUserRole() == 1) ? "Employee" : (LoginUser.getUserRole() == 2) ? "Admin" : "Unknown";
+      
+        sideBar.setLabel(roleString);
+
+        
     }
                 
     /**
@@ -154,41 +164,12 @@ public class testFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        mainPanel = new javax.swing.JPanel();
-        jScrollPane = new javax.swing.JScrollPane();
-        table1 = new com.raven.swing.table.Table();
         sideBar = new com.raven.componet.SideBar();
-        header = new com.raven.componet.header();
-        studentPanel1 = new com.raven.componet.UserPanel();
-        reportPanel1 = new com.raven.componet.ReportPanel();
-        homePanel1 = new com.raven.componet.HomePanel();
+        header = new com.raven.componet.header(LoginUser);
+        studentPanel1 = new com.ActionPanel.UserPanel();
+        reportPanel1 = new com.ActionPanel.ReportPanel();
+        homePanel1 = new com.ActionPanel.HomePanel();
         background = new javax.swing.JPanel();
-
-        mainPanel.setBackground(new java.awt.Color(245, 245, 245));
-
-        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 238, Short.MAX_VALUE)
-        );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 144, Short.MAX_VALUE)
-        );
-
-        table1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane.setViewportView(table1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -250,7 +231,7 @@ public class testFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new testFrame().setVisible(true);
+                new testFrame(null).setVisible(true);
             }
         });
     }
@@ -258,12 +239,9 @@ public class testFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel background;
     private com.raven.componet.header header;
-    private com.raven.componet.HomePanel homePanel1;
-    private javax.swing.JScrollPane jScrollPane;
-    private javax.swing.JPanel mainPanel;
-    private com.raven.componet.ReportPanel reportPanel1;
+    private com.ActionPanel.HomePanel homePanel1;
+    private com.ActionPanel.ReportPanel reportPanel1;
     private com.raven.componet.SideBar sideBar;
-    private com.raven.componet.UserPanel studentPanel1;
-    private com.raven.swing.table.Table table1;
+    private com.ActionPanel.UserPanel studentPanel1;
     // End of variables declaration//GEN-END:variables
 }

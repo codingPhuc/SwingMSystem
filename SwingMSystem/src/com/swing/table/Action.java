@@ -1,4 +1,4 @@
-package com.raven.swing.table;
+package com.swing.table;
 
 import com.model.ModelActionUser;
 import com.model.ModelUser;
@@ -54,7 +54,7 @@ public class Action extends javax.swing.JPanel {
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
-        cmdDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/Icon/TableDeleteAction.png"))); // NOI18N
+        cmdDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/ResourceImage/TableDeleteAction.png"))); // NOI18N
         cmdDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmdDeleteActionPerformed(evt);
@@ -62,10 +62,10 @@ public class Action extends javax.swing.JPanel {
         });
         add(cmdDelete);
 
-        cmdView.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/Icon/TableViewAction.png"))); // NOI18N
+        cmdView.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/ResourceImage/TableViewAction.png"))); // NOI18N
         add(cmdView);
 
-        cmdEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/Icon/TableeditAction.png"))); // NOI18N
+        cmdEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/ResourceImage/TableeditAction.png"))); // NOI18N
         add(cmdEdit);
     }// </editor-fold>//GEN-END:initComponents
 

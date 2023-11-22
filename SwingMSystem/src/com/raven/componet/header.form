@@ -57,7 +57,7 @@
     <Component class="javax.swing.JButton" name="MenuButtons">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/com/Icon/menu.png"/>
+          <Image iconType="3" name="/com/ResourceImage/Header_MenuButton.png"/>
         </Property>
       </Properties>
     </Component>

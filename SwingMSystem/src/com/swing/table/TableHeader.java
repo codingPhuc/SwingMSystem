@@ -1,4 +1,4 @@
-package com.raven.swing.table;
+package com.swing.table;
 
 import java.awt.Color;
 import java.awt.Font;

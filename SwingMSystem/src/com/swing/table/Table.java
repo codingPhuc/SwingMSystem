@@ -1,4 +1,4 @@
-package com.raven.swing.table;
+package com.swing.table;
 
 //import com.raven.swing.scrollbar.ScrollBarCustom;
 import com.model.ModelActionStudent;

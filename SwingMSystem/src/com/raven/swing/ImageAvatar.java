@@ -1,6 +1,7 @@
 package com.raven.swing;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -9,6 +10,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -22,6 +25,7 @@ public class ImageAvatar extends JComponent {
 
     public void setIcon(Icon icon) {
         this.icon = icon;
+        repaint();
     }
 
     public int getBorderSize() {
@@ -99,4 +103,7 @@ public class ImageAvatar extends JComponent {
     private Image toImage(Icon icon) {
         return ((ImageIcon) icon).getImage();
     }
+    
+     
+
 }

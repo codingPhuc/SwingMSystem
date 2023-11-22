@@ -43,9 +43,9 @@ public class UserInterFace extends javax.swing.JFrame {
         UserButton = new javax.swing.JButton();
         reportButton = new javax.swing.JButton();
         lvl1_sidecontainer = new javax.swing.JPanel();
-        studentPanel1 = new com.raven.componet.UserPanel();
-        homePanel1 = new com.raven.componet.HomePanel();
-        reportPanel1 = new com.raven.componet.ReportPanel();
+        studentPanel1 = new com.ActionPanel.UserPanel();
+        homePanel1 = new com.ActionPanel.HomePanel();
+        reportPanel1 = new com.ActionPanel.ReportPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -233,14 +233,14 @@ public class UserInterFace extends javax.swing.JFrame {
     private javax.swing.JButton HomeButton;
     private javax.swing.JButton StudentButton;
     private javax.swing.JButton UserButton;
-    private com.raven.componet.HomePanel homePanel1;
+    private com.ActionPanel.HomePanel homePanel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel lvl1_sidecontainer;
     private javax.swing.JButton reportButton;
-    private com.raven.componet.ReportPanel reportPanel1;
+    private com.ActionPanel.ReportPanel reportPanel1;
     private com.raven.componet.SideBar sideBar1;
-    private com.raven.componet.UserPanel studentPanel1;
+    private com.ActionPanel.UserPanel studentPanel1;
     // End of variables declaration//GEN-END:variables
 }

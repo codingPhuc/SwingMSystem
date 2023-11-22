@@ -41,8 +41,8 @@ public class loginFrame extends javax.swing.JFrame {
         lvl2_InputText = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        lvl3_UserTF = new com.raven.componet.IconTextField();
-        lvl3_PasswordTF = new com.raven.componet.IconTextField();
+        lvl3_UserTF = new com.CustomComponent.IconTextField();
+        lvl3_PasswordTF = new com.CustomComponent.IconTextField();
         Lvl2_LoginButton = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
 
@@ -282,7 +282,7 @@ public class loginFrame extends javax.swing.JFrame {
     private javax.swing.JPanel lvl2_InputText;
     private javax.swing.JPanel lvl2_ManamentTitle;
     private javax.swing.JPanel lvl2_UserIcon;
-    private com.raven.componet.IconTextField lvl3_PasswordTF;
-    private com.raven.componet.IconTextField lvl3_UserTF;
+    private com.CustomComponent.IconTextField lvl3_PasswordTF;
+    private com.CustomComponent.IconTextField lvl3_UserTF;
     // End of variables declaration//GEN-END:variables
 }

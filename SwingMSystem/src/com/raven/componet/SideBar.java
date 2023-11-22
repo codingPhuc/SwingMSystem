@@ -24,7 +24,9 @@ import javax.swing.border.EmptyBorder;
 public class SideBar extends javax.swing.JPanel {
 
    
-
+    public  void setLabel(String label) {
+        jLabel2.setText(label);
+    }
     /**
      * Creates new form SideBar
      */
@@ -78,10 +80,10 @@ protected void paintChildren(Graphics grphcs) {
 
  public void initMenuItem() {
       
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/Icon/SideBarHome.png")), "Home"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/Icon/SideBarUser.png")), "User"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/Icon/SideBarStudent.png")), "Student"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/Icon/SideBarReport.png")), "Report"));
+        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarHome.png")), "Home"));
+        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarUser.png")), "User"));
+        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarStudent.png")), "Student"));
+        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarReport.png")), "Report"));
     }
  private void addMenu(ModelMenu menu) {
        

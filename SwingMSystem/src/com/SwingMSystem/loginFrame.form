@@ -236,7 +236,7 @@
                 <Property name="text" type="java.lang.String" value="PASSWORD"/>
               </Properties>
             </Component>
-            <Component class="com.raven.componet.IconTextField" name="lvl3_UserTF">
+            <Component class="com.CustomComponent.IconTextField" name="lvl3_UserTF">
               <Properties>
                 <Property name="autoscrolls" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="lvl3_UserTF" noResource="true"/>
@@ -249,7 +249,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lvl3_UserTFActionPerformed"/>
               </Events>
             </Component>
-            <Component class="com.raven.componet.IconTextField" name="lvl3_PasswordTF">
+            <Component class="com.CustomComponent.IconTextField" name="lvl3_PasswordTF">
               <Properties>
                 <Property name="name" type="java.lang.String" value="lvl3_PasswordTF" noResource="true"/>
                 <Property name="prefixIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">

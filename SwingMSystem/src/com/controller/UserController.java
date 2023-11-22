@@ -21,19 +21,16 @@ public class UserController {
     
     public UserController()
     {
-        ListUser.add(new ModelUser(new ImageIcon(getClass().getResource("/com/raven/icon/profile.jpg")), 0, "Jonh", "username1", "password1", "01-01-1990", "1234567890", 300, true));
-ListUser.add(new ModelUser(new ImageIcon(getClass().getResource("/com/raven/icon/profile1.jpg")), 1, "Dara", "username2", "password2", "02-02-1991", "9876543210", 300, true));
-ListUser.add(new ModelUser(new ImageIcon(getClass().getResource("/com/raven/icon/profile2.jpg")), 2, "Bora", "username3", "password3", "03-03-1992", "5555555555", 300, true));
-ListUser.add(new ModelUser(new ImageIcon(getClass().getResource("/com/raven/icon/profile1.jpg")), 3, "Alice", "alice123", "password123", "04-04-1993", "5555555555", 300, true));
-ListUser.add(new ModelUser(new ImageIcon(getClass().getResource("/com/raven/icon/profile1.jpg")), 4, "Bob", "bob456", "password456", "05-05-1994", "5555555555", 300, true));
-ListUser.add(new ModelUser(new ImageIcon(getClass().getResource("/com/raven/icon/profile1.jpg")), 5, "Eve", "eve789", "password789", "06-06-1995", "5555555555", 300, true));
+
+        ListUser.add( new ModelUser(1,"pokemon", "Dara", "/com/raven/icon/profile1.jpg", 31, "9876543210", -1, 1));
+        ListUser.add( new ModelUser(2,"poke", "jacop", "/com/raven/icon/profile1.jpg", 31, "9876543210", -1, 1));
 
     }
    public void deleteUser(int userID) {
    Iterator<ModelUser> iterator = ListUser.iterator();
     while (iterator.hasNext()) {
         ModelUser user = iterator.next();
-        if (user.getID() == userID) {
+        if (user.getUserID() == userID) {
             iterator.remove();
             break; // Assuming there's only one matching user with the given ID
         }
@@ -56,7 +53,10 @@ ListUser.add(new ModelUser(new ImageIcon(getClass().getResource("/com/raven/icon
     return ListUser;
 }
 
-     
+     public void addUser() {
+
+    ListUser.add(new ModelUser("/com/raven/icon/profile1.jpg", 6, "Eve", "eve789", "password789", "06-06-1995", "5555555555", 1, true));
+}
      
      
 }

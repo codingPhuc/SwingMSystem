@@ -1,0 +1,255 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
+package testing;
+
+import java.awt.Color;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.FileSystemNotFoundException;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+
+import javax.swing.JFileChooser;
+import org.apache.commons.lang3.RandomStringUtils;
+
+/**
+ *
+ * @author konod
+ */
+public class NewJFrame extends javax.swing.JFrame {
+
+    /**
+     * Creates new form NewJFrame
+     */
+     private static CountDownLatch latch = new CountDownLatch(1);
+    public NewJFrame() {
+        initComponents();  
+        init();
+        
+      
+    
+    }
+    private void init() {
+        System.out.println("Present Project Directory : "+ System.getProperty("user.dir"));
+    // Load the default image
+   String srcDirectory = System.getProperty("user.dir") + File.separator + "src";
+String packagePath = File.separator + "com" + File.separator + "Icon"; // Added File.separator at the beginning
+String imagePath = srcDirectory + packagePath + File.separator + "profile1.jpg"; // Added File.separator before the file name
+
+ImageIcon imageIcon = new ImageIcon(imagePath);
+      
+    imageAvatar1.setIcon(imageIcon);
+
+    imageAvatar1.addMouseListener(new HoverListener());
+
+    jButton1.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showOpenDialog(NewJFrame.this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                String filename = saveImage(selectedFile);
+               String relativePath = filename.substring(filename.indexOf(File.separator+"src" + File.separator + "com" + File.separator + "Icon"));
+                System.out.println(relativePath);
+
+                // Load the saved image using the absolute file path
+                System.out.println(filename);
+             
+                ImageIcon imageIcon = new ImageIcon(filename);
+                imageAvatar1.setIcon(imageIcon);
+                pack();
+            }
+        }
+    });
+    pack();
+}
+   
+private static String saveImage(File sourceFile) {
+    String destinationFileName = "";
+
+    try {
+        String fileName = sourceFile.getName();
+        String fileExtension = "";
+
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
+            fileExtension = fileName.substring(dotIndex + 1).toLowerCase();
+        }
+
+        BufferedImage image = ImageIO.read(sourceFile);
+        String srcDirectory = System.getProperty("user.dir") + File.separator + "src";
+        String packagePath = "com" + File.separator + "Icon";
+
+        // Create the destination directory if it doesn't exist
+        File directory = new File(srcDirectory, packagePath);
+      
+
+        // Specify the file name for the saved image
+        String ext = "jpg";
+        if ("png".equals(fileExtension)) {
+            ext = "png";
+        }
+
+        destinationFileName = String.format("%s.%s", RandomStringUtils.randomAlphanumeric(8), ext);
+
+        // Create the destination file in the specified directory
+        File destinationFile = new File(directory, destinationFileName);
+     
+        // Write the image to the destination file
+        ImageIO.write(image, ext, destinationFile);
+
+        // Get the relative path to the saved image
+        String imagePath = srcDirectory +File.separator+ packagePath + File.separator + destinationFileName; 
+        return imagePath;
+    } catch (IOException ex) {
+        Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    return "";
+}
+
+    
+     
+     private class HoverListener extends MouseAdapter {
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            // Set a lighter color when the mouse enters
+            setBackground(Color.WHITE); // You can customize this color
+            repaint();
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            // Reset to the original color when the mouse exits
+            setForeground(Color.BLACK); // You can use the original color here
+            repaint();
+        }
+    }
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        imageAvatar1 = new com.raven.swing.ImageAvatar();
+        jButton1 = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        imageAvatar1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                imageAvatar1MouseClicked(evt);
+            }
+        });
+
+        jButton1.setText("jButton1");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(258, 258, 258)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(imageAvatar1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(289, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(46, 46, 46)
+                .addComponent(imageAvatar1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(57, 57, 57)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(146, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void imageAvatar1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imageAvatar1MouseClicked
+       JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(NewJFrame.this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            
+            // Load and display the selected image
+            File selectedFile = fileChooser.getSelectedFile();
+                String filename = saveImage(selectedFile);
+               String relativePath = filename.substring(filename.indexOf(File.separator+"src" + File.separator + "com" + File.separator + "Icon"));
+                System.out.println(relativePath);
+
+                // Load the saved image using the absolute file path
+               
+            
+            try {
+                // Read the image using ImageIO
+                ImageIcon imageIcon = new ImageIcon(ImageIO.read(selectedFile));
+                imageAvatar1.setIcon(imageIcon);
+                pack();
+
+                // You can add code here to save the selected image or perform other actions
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_imageAvatar1MouseClicked
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new NewJFrame().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.raven.swing.ImageAvatar imageAvatar1;
+    private javax.swing.JButton jButton1;
+    // End of variables declaration//GEN-END:variables
+}

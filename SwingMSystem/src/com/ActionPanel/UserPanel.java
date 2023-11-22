@@ -2,22 +2,30 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package com.raven.componet;
+package com.ActionPanel;
 
+import com.Dao.LoginHistoryDao;
+import com.Dao.UserDao;
 import java.awt.event.KeyEvent;
 import com.EventInterface.EventActionUser;
-import com.controller.UserController;
+
 import com.model.ModelUser;
-import java.awt.Dialog;
-import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
+import com.JdialogAction.InputDialog;
+import com.JdialogAction.LoginHistoryDialog;
+import java.awt.Frame;
+
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+
+
+
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableModel;
+
+
+
 
 /**
  *
@@ -26,52 +34,113 @@ import javax.swing.table.DefaultTableModel;
 public class UserPanel extends javax.swing.JPanel {
     
     
-    private UserController userController; 
+    private final UserDao userDao; 
+    private static InputDialog customDialog;
 
-    
-    private void Reload()
-    {
-        initTableData() ; 
+    private static void openCustomFrame(JPanel parentFrame) {
+        // Create a new JDialog
+        
+//        customDialog.setLayout(new FlowLayout());
+
+        // Components for the custom dialog
+//        JTextField textField = new JTextField(10);
+//        JButton okButton = new JButton("OK");
+//
+//        okButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                // Process the entered value (you can do something with it)
+//                String enteredValue = textField.getText();
+//                System.out.println("Entered value: " + enteredValue);
+//
+//                // Close the custom dialog
+//                customDialog.dispose();
+//
+//                // Set focus back to the parent frame
+//                parentFrame.requestFocus();
+//            }
+//        });
+//
+//        customDialog.add(new JLabel("Enter a value: "));
+//        customDialog.add(textField);
+//        customDialog.add(okButton);
+//
+//        // Set properties for the dialog
+//        customDialog.setSize(300, 150);
+        customDialog.setLocationRelativeTo(parentFrame);
+        customDialog.setVisible(true);
+
+        // Set focus to the text field when the custom dialog is opened
     }
+    private void Reload()
+    {   
+        table1.ClearTable();
+        init() ; 
+        initTableData() ; 
+        
+        
+    }
+
     // the Event that will be pass into the actionButton 
    private void initTableData() {
      EventActionUser eventAction = new EventActionUser() {
         @Override
         public void delete(ModelUser user) {
         if(table1.isEditing())
-        {
+        {   
             table1.getCellEditor().stopCellEditing();
         }
        
-        userController.deleteUser(user.getID());
-        table1.ClearTable();
+     
+        userDao.deleteUser(user.getUserID());
         Reload();
         }
 
         @Override
         public void update(ModelUser user) {
-            System.out.println("Update User: " + user.getName());
+            if(table1.isEditing())
+        {
+            table1.getCellEditor().stopCellEditing();
+        }
+             InputDialog inputDialog = new InputDialog((Frame) SwingUtilities.getWindowAncestor(table1), true,user);
+
+            inputDialog.setVisible(true);
+          
+            Reload();
          
         }
 
         @Override
         public void view(ModelUser user) {
-            System.out.println("View User: " + user.getName());
+            LoginHistoryDialog logindialog =  new LoginHistoryDialog((Frame) SwingUtilities.getWindowAncestor(table1), true,user) ;
+            logindialog.setVisible(true); 
+            
+            Reload();
+            
         }
     };
-  
+     
 
-for (ModelUser user : userController.getUsers())
+for (ModelUser user : userDao.getAllEmployeeAndManager())
     {   
-//        System.out.println("reload id :");
-//        System.out.println(user.getID());
+
         table1.addRow(user.toRowTable(eventAction));
     }
 
    
 }
-
-
+   
+   
+    private void init() {
+        // button to add the user 
+        UserAddingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Code to be executed when the button is clicked
+               
+            }
+        });
+    }
 
 
     /**
@@ -79,7 +148,7 @@ for (ModelUser user : userController.getUsers())
      */
     public UserPanel() {
         
-        userController = new UserController();
+        userDao = new UserDao();
         initComponents();
         initTableData() ;
 //        table1.removeLastColumn();
@@ -99,7 +168,7 @@ for (ModelUser user : userController.getUsers())
 
         jButton1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        customTextField1 = new com.raven.componet.CustomTextField();
+        customTextField1 = new com.CustomComponent.CustomTextField();
         jPanel3 = new javax.swing.JPanel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jComboBox2 = new javax.swing.JComboBox<>();
@@ -112,11 +181,10 @@ for (ModelUser user : userController.getUsers())
         jLabel5 = new javax.swing.JLabel();
         organGradientPaint2 = new PaintComponent.OrganGradientPaint();
         jLabel2 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        UserAddingButton = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        table1 = new com.raven.swing.table.Table();
+        table1 = new com.swing.table.Table();
 
         jButton1.setText("jButton1");
 
@@ -157,11 +225,11 @@ for (ModelUser user : userController.getUsers())
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(168, 168, 168)
+                .addGap(176, 176, 176)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
                     .addComponent(customTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(226, Short.MAX_VALUE))
+                .addContainerGap(218, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -237,18 +305,13 @@ for (ModelUser user : userController.getUsers())
         jLabel2.setForeground(new java.awt.Color(153, 255, 255));
         jLabel2.setText("User Action :");
 
-        jButton3.setBackground(new java.awt.Color(0, 153, 153));
-        jButton3.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(153, 255, 255));
-        jButton3.setText("Add Employee");
-
-        jButton4.setBackground(new java.awt.Color(0, 153, 153));
-        jButton4.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(153, 255, 255));
-        jButton4.setText("Add Manager");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        UserAddingButton.setBackground(new java.awt.Color(0, 153, 153));
+        UserAddingButton.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        UserAddingButton.setForeground(new java.awt.Color(153, 255, 255));
+        UserAddingButton.setText("Add User");
+        UserAddingButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                UserAddingButtonActionPerformed(evt);
             }
         });
 
@@ -258,10 +321,9 @@ for (ModelUser user : userController.getUsers())
             organGradientPaint2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(organGradientPaint2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(organGradientPaint2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(organGradientPaint2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(UserAddingButton, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(106, Short.MAX_VALUE))
         );
         organGradientPaint2Layout.setVerticalGroup(
@@ -269,11 +331,9 @@ for (ModelUser user : userController.getUsers())
             .addGroup(organGradientPaint2Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(115, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(UserAddingButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(182, Short.MAX_VALUE))
         );
 
         jPanel4.add(organGradientPaint2);
@@ -285,7 +345,7 @@ for (ModelUser user : userController.getUsers())
 
             },
             new String [] {
-                "    ICON", "NAME", "BIRTH DAY", "PHONE ", "STATUS", "ISONLINE", "ACTION "
+                "    ICON", "NAME", "BIRTH DAY", "PHONE ", "STATUS", "ROLE", "ACTION "
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -344,34 +404,26 @@ for (ModelUser user : userController.getUsers())
                 }
         
     }//GEN-LAST:event_customTextField1KeyPressed
+    
+    private void UserAddingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserAddingButtonActionPerformed
+       if(table1.isEditing())
+        {
+            table1.getCellEditor().stopCellEditing();
+        }
+            InputDialog inputDialog = new InputDialog((Frame) SwingUtilities.getWindowAncestor(table1), true);
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-//           
+            inputDialog.setVisible(true);
+          
+            Reload();   
   // Create a new JDialog
-    JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Input Panel", Dialog.ModalityType.APPLICATION_MODAL);
-
-    // Create an instance of InputPanel
-    InputPanel input = new InputPanel();
-
-    // Add the InputPanel to the dialog's content pane
-    dialog.getContentPane().add(input);
-
-    // Set the dialog's properties
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    dialog.pack();
-    dialog.setLocationRelativeTo(this);
-    dialog.setResizable(false);
-
-    // Show the dialog
-    dialog.setVisible(true);
-    }//GEN-LAST:event_jButton4ActionPerformed
+     
+    }//GEN-LAST:event_UserAddingButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.raven.componet.CustomTextField customTextField1;
+    private javax.swing.JButton UserAddingButton;
+    private com.CustomComponent.CustomTextField customTextField1;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
@@ -387,6 +439,8 @@ for (ModelUser user : userController.getUsers())
     private javax.swing.JScrollPane jScrollPane2;
     private PaintComponent.LightBule lightBule2;
     private PaintComponent.OrganGradientPaint organGradientPaint2;
-    private com.raven.swing.table.Table table1;
+    private com.swing.table.Table table1;
     // End of variables declaration//GEN-END:variables
+
+    
 }
