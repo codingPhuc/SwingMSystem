@@ -47,7 +47,7 @@ public class Background extends JComponent {
 
     public Background() {
       try {
-      image = new ImageIcon(getClass().getResource("/login/img_2.jpg"));
+      image = new ImageIcon(getClass().getResource("/login/img_1.jpg"));
     } catch (Exception e) {
         e.printStackTrace();
     }

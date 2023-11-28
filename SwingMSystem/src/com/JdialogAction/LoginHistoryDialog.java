@@ -52,7 +52,7 @@ public class LoginHistoryDialog extends javax.swing.JDialog {
         UserNameLabel = new javax.swing.JLabel();
         RoleLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        table1 = new com.swing.table.Table();
+        table1 = new com.SwingTable.Table();
         imageAvatar1 = new com.raven.swing.ImageAvatar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -156,7 +156,7 @@ public class LoginHistoryDialog extends javax.swing.JDialog {
     private javax.swing.JLabel UserNameLabel;
     private com.raven.swing.ImageAvatar imageAvatar1;
     private javax.swing.JScrollPane jScrollPane1;
-    private com.swing.table.Table table1;
+    private com.SwingTable.Table table1;
     // End of variables declaration//GEN-END:variables
 
 }

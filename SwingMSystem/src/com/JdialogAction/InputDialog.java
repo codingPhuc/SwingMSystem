@@ -20,7 +20,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import org.apache.commons.lang3.RandomStringUtils;
-import testing.NewJFrame;
+
 
 /**
  *
@@ -176,7 +176,7 @@ phoneDocument.setDocumentFilter(new DocumentFilter() {
         String imagePath = srcDirectory +File.separator+ packagePath + File.separator + destinationFileName; 
         return imagePath;
     } catch (IOException ex) {
-        Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        
     }
 
     return "";

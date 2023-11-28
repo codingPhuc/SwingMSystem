@@ -132,12 +132,12 @@ for (ModelCertificate cef : certificateDao.getAllCertificates())
         jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        studentTable = new com.swing.table.Table();
+        studentTable = new com.SwingTable.Table();
         IMPORTSTUDENT = new javax.swing.JToggleButton();
         EXPORTSTUDENT = new javax.swing.JToggleButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        certificatetable = new com.swing.table.Table();
+        certificatetable = new com.SwingTable.Table();
         IMPORTCEF = new javax.swing.JToggleButton();
         jLabel2 = new javax.swing.JLabel();
         EXPORTCEF = new javax.swing.JToggleButton();
@@ -665,7 +665,7 @@ if (excelGrade != null) {
     private javax.swing.JToggleButton EXPORTSTUDENT;
     private javax.swing.JToggleButton IMPORTCEF;
     private javax.swing.JToggleButton IMPORTSTUDENT;
-    private com.swing.table.Table certificatetable;
+    private com.SwingTable.Table certificatetable;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -673,7 +673,7 @@ if (excelGrade != null) {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private com.swing.table.Table studentTable;
+    private com.SwingTable.Table studentTable;
     // End of variables declaration//GEN-END:variables
 
     

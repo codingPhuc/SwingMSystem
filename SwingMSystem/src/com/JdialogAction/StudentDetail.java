@@ -130,7 +130,7 @@ public class StudentDetail extends javax.swing.JDialog {
         AddCertificate = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        table1 = new com.swing.table.Table();
+        table1 = new com.SwingTable.Table();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1008, 526));
@@ -328,6 +328,6 @@ public class StudentDetail extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private com.swing.table.Table table1;
+    private com.SwingTable.Table table1;
     // End of variables declaration//GEN-END:variables
 }

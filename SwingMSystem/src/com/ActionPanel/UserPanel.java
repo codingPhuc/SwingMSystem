@@ -151,7 +151,7 @@ public class UserPanel extends javax.swing.JPanel {
         UserAddingButton = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        usertable = new com.swing.table.Table();
+        usertable = new com.SwingTable.Table();
 
         jButton1.setText("jButton1");
 
@@ -385,7 +385,7 @@ public class UserPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private PaintComponent.LightBule lightBule2;
     private PaintComponent.OrganGradientPaint organGradientPaint2;
-    private com.swing.table.Table usertable;
+    private com.SwingTable.Table usertable;
     // End of variables declaration//GEN-END:variables
 
     

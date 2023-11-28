@@ -20,7 +20,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import org.apache.commons.lang3.RandomStringUtils;
-import testing.NewJFrame;
+
 
 /**
  *
