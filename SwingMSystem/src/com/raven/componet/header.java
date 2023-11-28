@@ -4,10 +4,21 @@
  */
 package com.raven.componet;
 
+import com.Dao.UserDao;
+
 import com.model.ModelUser;
+import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.border.EmptyBorder;
+import org.apache.commons.lang3.RandomStringUtils;
 
 /**
  *
@@ -19,7 +30,8 @@ public class header extends javax.swing.JPanel {
      * Creates new form header
      */
     private ModelUser LoginUser; 
-   
+     private String relativePath ; 
+    private UserDao userDao;
     public header(ModelUser LoginUser) {
       initComponents();
       this.LoginUser = LoginUser ; 
@@ -28,12 +40,55 @@ public class header extends javax.swing.JPanel {
         
     }
     private void init() {
+        userDao = new UserDao();
         jLabel1.setText(LoginUser.getUserName());
         ImageIcon icon = new ImageIcon(LoginUser.getProfilePicture());
         imageAvatar1.setIcon(icon);
     }
     
-    
+    private static String saveImage(File sourceFile) {
+    String destinationFileName = "";
+
+    try {
+        String fileName = sourceFile.getName();
+        String fileExtension = "";
+
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
+            fileExtension = fileName.substring(dotIndex + 1).toLowerCase();
+        }
+
+        BufferedImage image = ImageIO.read(sourceFile);
+        String srcDirectory = System.getProperty("user.dir") + File.separator + "src";
+        String packagePath = "com" + File.separator + "Icon";
+
+        // Create the destination directory if it doesn't exist
+        File directory = new File(srcDirectory, packagePath);
+      
+
+        // Specify the file name for the saved image
+        String ext = "jpg";
+        if ("png".equals(fileExtension)) {
+            ext = "png";
+        }
+
+        destinationFileName = String.format("%s.%s", RandomStringUtils.randomAlphanumeric(8), ext);
+
+        // Create the destination file in the specified directory
+        File destinationFile = new File(directory, destinationFileName);
+     
+        // Write the image to the destination file
+        ImageIO.write(image, ext, destinationFile);
+
+        // Get the relative path to the saved image
+        String imagePath = srcDirectory +File.separator+ packagePath + File.separator + destinationFileName; 
+        return imagePath;
+    } catch (IOException ex) {
+        Logger.getLogger(testing.NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    return "";
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -51,6 +106,16 @@ public class header extends javax.swing.JPanel {
         setBackground(new java.awt.Color(173, 216, 230));
 
         imageAvatar1.setPreferredSize(new java.awt.Dimension(48, 48));
+        imageAvatar1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                imageAvatar1FocusGained(evt);
+            }
+        });
+        imageAvatar1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                imageAvatar1MouseClicked(evt);
+            }
+        });
 
         MenuButtons.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/ResourceImage/Header_MenuButton.png"))); // NOI18N
 
@@ -63,21 +128,55 @@ public class header extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(MenuButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 413, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 409, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(imageAvatar1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(imageAvatar1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(15, 15, 15))
-            .addComponent(MenuButtons, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(imageAvatar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(MenuButtons, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(imageAvatar1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void imageAvatar1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_imageAvatar1FocusGained
+         imageAvatar1.setBorder(new EmptyBorder(5, 5, 5, 5));
+         imageAvatar1.setBackground(Color.red);
+    }//GEN-LAST:event_imageAvatar1FocusGained
+
+    private void imageAvatar1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imageAvatar1MouseClicked
+          JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(header.this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            
+            // Load and display the selected image
+            File selectedFile = fileChooser.getSelectedFile();
+                String filename = saveImage(selectedFile);
+                this.relativePath = filename.substring(filename.indexOf(File.separator+"src" + File.separator + "com" + File.separator + "Icon"));
+               
+
+                // Load the saved image using the absolute file path
+               
+            
+            try {
+                // Read the image using ImageIO
+                ImageIcon imageIcon = new ImageIcon(ImageIO.read(selectedFile));
+                imageAvatar1.setIcon(imageIcon);
+                userDao.updateUser(LoginUser.getUserID(), LoginUser.getUserName(), LoginUser.getPassword(), this.relativePath, LoginUser.getAge(), LoginUser.getPhoneNumber(), LoginUser.getStatus(), LoginUser.getUserRole());
+
+                // You can add code here to save the selected image or perform other actions
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_imageAvatar1MouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

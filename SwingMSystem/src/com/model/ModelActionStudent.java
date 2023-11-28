@@ -4,9 +4,14 @@ package com.model;
 import com.EventInterface.EventActionStudent;
 
 // contain the student and what should the event be doing with the action 
+
+
 public class ModelActionStudent {
 
-    public ModelStudent setStudent() {
+    private ModelStudent student;
+    private EventActionStudent event;
+
+    public ModelStudent getStudent() {
         return student;
     }
 
@@ -21,10 +26,6 @@ public class ModelActionStudent {
     public void setEvent(EventActionStudent event) {
         this.event = event;
     }
-//    public ModelAction(ModelManager student, EventAction event) {
-//        this.student = student;
-//        this.event = event;
-//    }
 
     public ModelActionStudent(ModelStudent student, EventActionStudent event) {
         this.student = student;
@@ -33,7 +34,4 @@ public class ModelActionStudent {
 
     public ModelActionStudent() {
     }
-
-    private ModelStudent student;
-    private EventActionStudent event;
 }

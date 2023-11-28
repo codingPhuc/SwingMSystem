@@ -2,10 +2,12 @@ package main;
 
 import com.Dao.LoginHistoryDao;
 import com.Dao.UserDao;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.model.ModelUser;
 import com.raven.componet.testFrame;
 import java.awt.Color;
 import java.time.LocalDateTime;
+import javax.swing.UIManager;
 
 /**
  *
@@ -147,9 +149,19 @@ public class Login extends javax.swing.JFrame {
     ModelUser loginUser = userDao.authenticate(user, pass);
 
     if (loginUser != null) {
+          try {
+    UIManager.setLookAndFeel( new FlatLightLaf() );
+} catch( Exception ex ) {
+    System.err.println( "Failed to initialize LaF" );
+}
         // Open the TestFrame upon successful login
-        testFrame testFrame = new testFrame(loginUser);
-        testFrame.setVisible(true);
+         java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new testFrame(loginUser).setVisible(true);
+            }
+        });
+//        testFrame testFrame = new testFrame(loginUser);
+//        testFrame.setVisible(true);
 
         // Update the login history for the logged-in user
         updateLoginHistory(loginUser.getUserID());

@@ -4,81 +4,52 @@
  */
 package com.ActionPanel;
 
-import com.Dao.LoginHistoryDao;
+import com.Dao.StudentDao;
 import com.Dao.UserDao;
-import java.awt.event.KeyEvent;
+import com.EventInterface.EventActionStudent;
 import com.EventInterface.EventActionUser;
-
-import com.model.ModelUser;
 import com.JdialogAction.InputDialog;
+import com.JdialogAction.InputDialogStudent;
 import com.JdialogAction.LoginHistoryDialog;
+import com.model.ModelStudent;
+import com.model.ModelUser;
 import java.awt.Frame;
-
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-
-
-
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
-
-
 
 /**
  *
  * @author konod
  */
 public class UserPanel extends javax.swing.JPanel {
-    
-    
-    private final UserDao userDao; 
+   
+  
+     private final UserDao userDao; 
     private static InputDialog customDialog;
-
+    private  ModelUser loginUser ;
     private static void openCustomFrame(JPanel parentFrame) {
-        // Create a new JDialog
-        
-//        customDialog.setLayout(new FlowLayout());
 
-        // Components for the custom dialog
-//        JTextField textField = new JTextField(10);
-//        JButton okButton = new JButton("OK");
-//
-//        okButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                // Process the entered value (you can do something with it)
-//                String enteredValue = textField.getText();
-//                System.out.println("Entered value: " + enteredValue);
-//
-//                // Close the custom dialog
-//                customDialog.dispose();
-//
-//                // Set focus back to the parent frame
-//                parentFrame.requestFocus();
-//            }
-//        });
-//
-//        customDialog.add(new JLabel("Enter a value: "));
-//        customDialog.add(textField);
-//        customDialog.add(okButton);
-//
-//        // Set properties for the dialog
-//        customDialog.setSize(300, 150);
         customDialog.setLocationRelativeTo(parentFrame);
         customDialog.setVisible(true);
 
         // Set focus to the text field when the custom dialog is opened
     }
+
+    
     private void Reload()
     {   
-        table1.ClearTable();
+        usertable.ClearTable();
+        
         init() ; 
         initTableData() ; 
         
         
+    }
+     private void init() {
+        // button to add the user 
+       
     }
 
     // the Event that will be pass into the actionButton 
@@ -86,9 +57,9 @@ public class UserPanel extends javax.swing.JPanel {
      EventActionUser eventAction = new EventActionUser() {
         @Override
         public void delete(ModelUser user) {
-        if(table1.isEditing())
+        if(usertable.isEditing())
         {   
-            table1.getCellEditor().stopCellEditing();
+            usertable.getCellEditor().stopCellEditing();
         }
        
      
@@ -98,11 +69,11 @@ public class UserPanel extends javax.swing.JPanel {
 
         @Override
         public void update(ModelUser user) {
-            if(table1.isEditing())
+            if(usertable.isEditing())
         {
-            table1.getCellEditor().stopCellEditing();
+            usertable.getCellEditor().stopCellEditing();
         }
-             InputDialog inputDialog = new InputDialog((Frame) SwingUtilities.getWindowAncestor(table1), true,user);
+             InputDialog inputDialog = new InputDialog((Frame) SwingUtilities.getWindowAncestor(usertable), true,user);
 
             inputDialog.setVisible(true);
           
@@ -112,7 +83,7 @@ public class UserPanel extends javax.swing.JPanel {
 
         @Override
         public void view(ModelUser user) {
-            LoginHistoryDialog logindialog =  new LoginHistoryDialog((Frame) SwingUtilities.getWindowAncestor(table1), true,user) ;
+            LoginHistoryDialog logindialog =  new LoginHistoryDialog((Frame) SwingUtilities.getWindowAncestor(usertable), true,user) ;
             logindialog.setVisible(true); 
             
             Reload();
@@ -121,42 +92,40 @@ public class UserPanel extends javax.swing.JPanel {
     };
      
 
-for (ModelUser user : userDao.getAllEmployeeAndManager())
-    {   
-
-        table1.addRow(user.toRowTable(eventAction));
+  // Get the selected values from the combo boxes
+    String selectedStatus = UserStatusCombobox.getSelectedItem().toString();
+    String selectedRole = UserRoleCombobox.getSelectedItem().toString();
+    // Loop through users and filter based on the selected values
+    for (ModelUser user : userDao.getAllEmployeeAndManager()) {
+        // Convert status and role to strings
+        String userStatus = (user.getStatus() == 0) ? "Normal" : "Blocked";
+        String userRole = (user.getUserRole() == 0) ? "Manager" : (user.getUserRole() == 1) ? "Employee" : "Unknown";   
+        // Check if the user matches the selected values
+        if (("none".equalsIgnoreCase(selectedStatus) || selectedStatus.equalsIgnoreCase(userStatus)) &&
+    ("All".equalsIgnoreCase(selectedRole) || selectedRole.equalsIgnoreCase(userRole))) {
+    usertable.addRow(user.toRowTable(eventAction));
+}
     }
 
    
 }
-   
-   
-    private void init() {
-        // button to add the user 
-        UserAddingButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code to be executed when the button is clicked
-               
-            }
-        });
-    }
-
-
-    /**
-     * Creates new form StudentPanel
-     */
-    public UserPanel() {
-        
+    public UserPanel(ModelUser loginUser ) {
+        this.loginUser = loginUser ;
+       
+       // set the user of the sotfware false if not admin  
         userDao = new UserDao();
         initComponents();
         initTableData() ;
-//        table1.removeLastColumn();
-        // pass the event in to the model student 
-//        table1.addRow(new ModelStudent(new ImageIcon(getClass().getResource("/com/raven/icon/profile.jpg")), "Jonh", "Male", "Java", 300).toRowTable(eventAction));
+        if(loginUser.getUserRole() == 1 || loginUser.getUserRole()==0)
+        { usertable.setTableVisible(false);
+            jLabel2.setVisible(false);
+            UserAddingButton.setVisible(false);
+        }
     }
-    
      
+
+
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -170,24 +139,23 @@ for (ModelUser user : userDao.getAllEmployeeAndManager())
         jPanel1 = new javax.swing.JPanel();
         customTextField1 = new com.CustomComponent.CustomTextField();
         jPanel3 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jComboBox3 = new javax.swing.JComboBox<>();
+        UserStatusCombobox = new javax.swing.JComboBox<>();
+        UserRoleCombobox = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         lightBule2 = new PaintComponent.LightBule();
         jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         organGradientPaint2 = new PaintComponent.OrganGradientPaint();
         jLabel2 = new javax.swing.JLabel();
         UserAddingButton = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        table1 = new com.swing.table.Table();
+        usertable = new com.swing.table.Table();
 
         jButton1.setText("jButton1");
 
+        setPreferredSize(new java.awt.Dimension(1058, 741));
         setLayout(new java.awt.BorderLayout());
 
         customTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -200,25 +168,22 @@ for (ModelUser user : userDao.getAllEmployeeAndManager())
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.X_AXIS));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        UserStatusCombobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "none", "blocked", "normal" }));
+        UserStatusCombobox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                UserStatusComboboxActionPerformed(evt);
             }
         });
-        jPanel3.add(jComboBox1);
+        jPanel3.add(UserStatusCombobox);
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox2.setPreferredSize(new java.awt.Dimension(72, 50));
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+        UserRoleCombobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Employee", "Manager" }));
+        UserRoleCombobox.setPreferredSize(new java.awt.Dimension(72, 50));
+        UserRoleCombobox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox2ActionPerformed(evt);
+                UserRoleComboboxActionPerformed(evt);
             }
         });
-        jPanel3.add(jComboBox2);
-
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel3.add(jComboBox3);
+        jPanel3.add(UserRoleCombobox);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -226,19 +191,25 @@ for (ModelUser user : userDao.getAllEmployeeAndManager())
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(176, 176, 176)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
-                    .addComponent(customTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(218, Short.MAX_VALUE))
+                .addComponent(customTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 676, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(206, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(173, 173, 173)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(210, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(customTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(52, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addContainerGap(53, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap()))
         );
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
@@ -255,45 +226,29 @@ for (ModelUser user : userDao.getAllEmployeeAndManager())
         jLabel4.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(153, 255, 255));
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("Employee Number : 0");
-
-        jLabel5.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(153, 255, 255));
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("Manager Number : 0");
+        jLabel4.setText("User Number : 0");
 
         javax.swing.GroupLayout lightBule2Layout = new javax.swing.GroupLayout(lightBule2);
         lightBule2.setLayout(lightBule2Layout);
         lightBule2Layout.setHorizontalGroup(
             lightBule2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(lightBule2Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(lightBule2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(lightBule2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1))
-                    .addGroup(lightBule2Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jLabel4)))
+                        .addGap(6, 6, 6)
+                        .addComponent(jLabel4))
+                    .addComponent(jLabel1))
                 .addContainerGap())
-            .addGroup(lightBule2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(lightBule2Layout.createSequentialGroup()
-                    .addGap(16, 16, 16)
-                    .addComponent(jLabel5)
-                    .addContainerGap(84, Short.MAX_VALUE)))
         );
         lightBule2Layout.setVerticalGroup(
             lightBule2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(lightBule2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(87, 87, 87)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
                 .addContainerGap())
-            .addGroup(lightBule2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(lightBule2Layout.createSequentialGroup()
-                    .addGap(62, 62, 62)
-                    .addComponent(jLabel5)
-                    .addContainerGap(190, Short.MAX_VALUE)))
         );
 
         jPanel4.add(lightBule2);
@@ -307,7 +262,7 @@ for (ModelUser user : userDao.getAllEmployeeAndManager())
 
         UserAddingButton.setBackground(new java.awt.Color(0, 153, 153));
         UserAddingButton.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        UserAddingButton.setForeground(new java.awt.Color(153, 255, 255));
+        UserAddingButton.setForeground(new java.awt.Color(0, 102, 102));
         UserAddingButton.setText("Add User");
         UserAddingButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -340,23 +295,23 @@ for (ModelUser user : userDao.getAllEmployeeAndManager())
 
         jPanel5.setLayout(new java.awt.BorderLayout());
 
-        table1.setModel(new javax.swing.table.DefaultTableModel(
+        usertable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "    ICON", "NAME", "BIRTH DAY", "PHONE ", "STATUS", "ROLE", "ACTION "
+                "ICON", "NAME", "BIRTH DAY", "PHONE ", "STATUS	", "ROLE	", "ACTION "
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, true
+                false, false, false, false, false, true, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(table1);
+        jScrollPane2.setViewportView(usertable);
 
         jPanel5.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
@@ -365,72 +320,63 @@ for (ModelUser user : userDao.getAllEmployeeAndManager())
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 694, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(0, 19, Short.MAX_VALUE)
+                .addGap(0, 15, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29))))
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 612, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         add(jPanel2, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox2ActionPerformed
-
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
-
     private void customTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_customTextField1KeyPressed
-         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                    // This code will be executed when Enter key is pressed
-                    String text = customTextField1.getText();
-                    System.out.println("Entered Text: " + text);
-                    customTextField1.setText("");
-                }
+     
         
     }//GEN-LAST:event_customTextField1KeyPressed
     
     private void UserAddingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserAddingButtonActionPerformed
-       if(table1.isEditing())
+       if(usertable.isEditing())
         {
-            table1.getCellEditor().stopCellEditing();
+            usertable.getCellEditor().stopCellEditing();
         }
-            InputDialog inputDialog = new InputDialog((Frame) SwingUtilities.getWindowAncestor(table1), true);
+            InputDialog inputDialog = new InputDialog((Frame) SwingUtilities.getWindowAncestor(usertable), true);
 
             inputDialog.setVisible(true);
           
             Reload();   
   // Create a new JDialog
      
+                 
     }//GEN-LAST:event_UserAddingButtonActionPerformed
+
+    private void UserStatusComboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserStatusComboboxActionPerformed
+         Reload();
+    }//GEN-LAST:event_UserStatusComboboxActionPerformed
+
+    private void UserRoleComboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserRoleComboboxActionPerformed
+        Reload();
+    }//GEN-LAST:event_UserRoleComboboxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton UserAddingButton;
+    private javax.swing.JComboBox<String> UserRoleCombobox;
+    private javax.swing.JComboBox<String> UserStatusCombobox;
     private com.CustomComponent.CustomTextField customTextField1;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -439,7 +385,7 @@ for (ModelUser user : userDao.getAllEmployeeAndManager())
     private javax.swing.JScrollPane jScrollPane2;
     private PaintComponent.LightBule lightBule2;
     private PaintComponent.OrganGradientPaint organGradientPaint2;
-    private com.swing.table.Table table1;
+    private com.swing.table.Table usertable;
     // End of variables declaration//GEN-END:variables
 
     

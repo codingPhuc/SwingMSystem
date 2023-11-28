@@ -4,15 +4,6 @@
   <NonVisualComponents>
     <Component class="com.raven.componet.SideBar" name="sideBar">
     </Component>
-    <Component class="com.raven.componet.header" name="header">
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.raven.componet.header(LoginUser)"/>
-      </AuxValues>
-    </Component>
-    <Component class="com.ActionPanel.UserPanel" name="studentPanel1">
-    </Component>
-    <Component class="com.ActionPanel.ReportPanel" name="reportPanel1">
-    </Component>
     <Component class="com.ActionPanel.HomePanel" name="homePanel1">
     </Component>
   </NonVisualComponents>

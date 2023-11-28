@@ -1,6 +1,7 @@
 package com.swing.table;
 
 //import com.raven.swing.scrollbar.ScrollBarCustom;
+import com.model.ModelActionCertificate;
 import com.model.ModelActionStudent;
 import com.model.ModelProfile;
 
@@ -13,8 +14,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import com.model.ModelActionUser;
 
-public class Table extends JTable {
+import javax.swing.SwingConstants;
 
+public class Table extends JTable {
+        private boolean  visable =true;
         public Table() {
         setOpaque(false);
         getTableHeader().setBackground(new Color(255, 255, 255));
@@ -27,9 +30,9 @@ public class Table extends JTable {
             @Override
             public Component getTableCellRendererComponent(JTable jtable, Object o, boolean bln, boolean bln1, int i, int i1) {
                 TableHeader header = new TableHeader(o + "");
-                if (i1 ==  6) {
+                
                     header.setHorizontalAlignment(JLabel.CENTER);
-                }
+                
                 return header;
             }
         });
@@ -39,6 +42,7 @@ public class Table extends JTable {
                 if (o instanceof ModelProfile) {
                     ModelProfile data = (ModelProfile) o;
                     Profile cell = new Profile(data);
+//                   cell.setLayout(new FlowLayout(FlowLayout.CENTER));
                     if (selected) {
                         cell.setBackground(new Color(239, 244, 255));
                     } else {
@@ -54,38 +58,64 @@ public class Table extends JTable {
                     } else {
                         cell.setBackground(Color.WHITE);
                     }
+                    // set the visibility of the button 
+                    cell.setButtonVisibility(visable);
                     return cell;
                 } 
-//                else if (o instanceof ModelActionStudent) {
-//                    ModelActionStudent data = (ModelActionStudent) o;
-//                    Action cell = new Action(data);
-//                    if (selected) {
-//                        cell.setBackground(new Color(239, 244, 255));
-//                    } else {
-//                        cell.setBackground(Color.WHITE);
-//                    }
-//                    return cell;
-//                } 
+                else if (o instanceof ModelActionStudent) {
+                    ModelActionStudent data = (ModelActionStudent) o;
+                    Action cell = new Action(data);
+                    if (selected) {
+                        cell.setBackground(new Color(239, 244, 255));
+                    } else {
+                        cell.setBackground(Color.WHITE);
+                    }
+                    cell.setButtonVisibility(visable);
+                    return cell;
+                } 
+                else if (o instanceof ModelActionCertificate) {
+                    ModelActionCertificate data = (ModelActionCertificate) o;
+                    Action cell = new Action(data);
+                    if (selected) {
+                        cell.setBackground(new Color(239, 244, 255));
+                    } else {
+                        cell.setBackground(Color.WHITE);
+                    }
+                    cell.setButtonVisibility(visable);
+                    return cell;
+                }
                 else {
                     Component com = super.getTableCellRendererComponent(jtable, o, selected, focus, i, i1);
                     setBorder(noFocusBorder);
                     com.setForeground(new Color(0, 0, 0, 0));
                     JLabel label = new JLabel(o + "");
                     label.setForeground(new Color(102, 102, 102));
+                    label.setHorizontalAlignment(SwingConstants.CENTER);
+                    
                     return label;
                 }
             }
         });
     }
+    
+    public void setTableVisible( boolean  visable  )
+    {
+        this.visable = visable ; 
+    }
 
 
     @Override
     public TableCellEditor getCellEditor(int row, int col) {
-        if (col == 6) {
-            return new TableCellAction();
-        } else {
-            return super.getCellEditor(row, col);
-        }
+            switch (col) {
+                case 5:
+                    return new TableCellActionCertificate(visable);
+                case 6:
+                    return new TableCellAction(visable);
+                case 7:
+                    return new TableCellActionStudent(visable);
+                default:
+                    return super.getCellEditor(row, col);
+            }
     }
 
     public void addRow(Object[] row) {

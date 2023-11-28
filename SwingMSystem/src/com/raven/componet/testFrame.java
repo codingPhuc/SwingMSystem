@@ -6,7 +6,10 @@ package com.raven.componet;
 
 import com.ActionPanel.HomePanel;
 import com.ActionPanel.ReportPanel;
+
+import com.ActionPanel.StudentPanel;
 import com.ActionPanel.UserPanel;
+
 import com.ActionPanel.mainPanel;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
@@ -14,6 +17,7 @@ import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 import com.EventInterface.EventMenuItemSelected;
 import com.model.ModelUser;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.jdesktop.animation.timing.Animator;
@@ -32,13 +36,9 @@ public class testFrame extends javax.swing.JFrame {
     private MigLayout layout;
     private  Animator  animator ; 
     private  mainPanel  mainPanel ;
-    private ModelUser LoginUser ;
+    private final ModelUser LoginUser ;
     public testFrame(ModelUser LoginUser) {
-          try {
-        UIManager.setLookAndFeel(new FlatLightLaf());
-    } catch (Exception ex) {
-        System.err.println("Failed to initialize LaF");
-    }
+         
         this.LoginUser =LoginUser ; 
 
         initComponents();
@@ -55,7 +55,7 @@ public class testFrame extends javax.swing.JFrame {
 //}
     
  private void init() {
-    
+    header = new header(LoginUser);
     // Set transparent white color
     Color transparentWhite = new Color(242,242,242, 128);
     background.setBackground(transparentWhite);
@@ -66,33 +66,39 @@ public class testFrame extends javax.swing.JFrame {
 
     // Initialize mainPanel
     mainPanel = new mainPanel();
-
+    mainPanel.setLayout(new BorderLayout());
     // Set event for menu selection in sideBar
     sideBar.setEventSelect(new EventMenuItemSelected() {
         @Override
         public void menuSelected(int menuIndex) {
+            mainPanel.removeAll();
             // Handle menu selection based on index
             switch (menuIndex) {
                 case 0:
                     // Show HomePanel when menu item 0 is selected
-                    mainPanel.showForm(new HomePanel());
+                    mainPanel.add(new HomePanel(), BorderLayout.CENTER);
+                    
                     break;
                 case 1:
                     // Show UserPanel when menu item 1 is selected
-                    mainPanel.showForm(new UserPanel());
+                    mainPanel.add(new UserPanel(LoginUser), BorderLayout.CENTER);
                     break;
                 case 2:
-                    // Add more cases for other sub-menu items as needed
+         
+                    mainPanel.add(new StudentPanel(LoginUser), BorderLayout.CENTER);
                     break;
                 case 3:
-                    // Show ReportPanel when menu item 3 is selected
-                    mainPanel.showForm(new ReportPanel());
+                    // Show ReportPanel when menu item 3 is select
+                    mainPanel.add(new ReportPanel(LoginUser), BorderLayout.CENTER);
+
                     break;
                 // Add more cases for other menu items as needed
                 default:
                     // Handle cases that are not explicitly defined
                     break;
             }
+        mainPanel.revalidate();
+        mainPanel.repaint();
         }
     });
 
@@ -105,6 +111,7 @@ public class testFrame extends javax.swing.JFrame {
         sideBar.initMenuItem();
       
         background.add(sideBar, "w 230!, spany 2");    // Span Y 2cell
+        
         background.add(header, "h 50, wrap 2");
         background.add(mainPanel, "w 90%, h 90%");
         
@@ -165,9 +172,6 @@ public class testFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         sideBar = new com.raven.componet.SideBar();
-        header = new com.raven.componet.header(LoginUser);
-        studentPanel1 = new com.ActionPanel.UserPanel();
-        reportPanel1 = new com.ActionPanel.ReportPanel();
         homePanel1 = new com.ActionPanel.HomePanel();
         background = new javax.swing.JPanel();
 
@@ -222,26 +226,20 @@ public class testFrame extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         
-       try {
-    UIManager.setLookAndFeel( new FlatLightLaf() );
-} catch( Exception ex ) {
-    System.err.println( "Failed to initialize LaF" );
-}
+     
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new testFrame(null).setVisible(true);
+                new testFrame(new ModelUser(40 , "admin", "admin", "\\src\\com\\Icon\\ZgGN0upg.png", 25 ,"1234567890",0,2)).setVisible(true);
             }
         });
     }
 
+    private  com.raven.componet.header header ; 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel background;
-    private com.raven.componet.header header;
     private com.ActionPanel.HomePanel homePanel1;
-    private com.ActionPanel.ReportPanel reportPanel1;
     private com.raven.componet.SideBar sideBar;
-    private com.ActionPanel.UserPanel studentPanel1;
     // End of variables declaration//GEN-END:variables
 }

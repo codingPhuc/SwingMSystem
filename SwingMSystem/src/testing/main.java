@@ -4,6 +4,9 @@
  */
 package testing;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 /**
  *
  * @author konod
@@ -68,7 +71,9 @@ public class main extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        LocalDate localDate = LocalDate.now();
+String dateTimeAsString = localDate.toString();
+System.out.println(dateTimeAsString);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

@@ -1,6 +1,10 @@
 package com.swing.table;
 
+import com.model.ModelActionCertificate;
+import com.model.ModelActionStudent;
+import com.model.ModelStudent;
 import com.model.ModelActionUser;
+import com.model.ModelCertificate;
 import com.model.ModelUser;
 
 import java.awt.Color;
@@ -11,10 +15,17 @@ import java.awt.event.ActionListener;
 // the model action contain the button you must pass the Event that you want each action to perform
 public class Action extends javax.swing.JPanel {
     private ModelUser user;
+    private ModelStudent student;
+    private ModelCertificate certificate;
+    
+
     public Action(ModelActionUser data) {
+        
         initComponents();
         setOpaque(false);
         this.user = data.getUser();
+       
+       
         cmdEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -36,7 +47,65 @@ public class Action extends javax.swing.JPanel {
             }
         });
     }
-
+     public void setButtonVisibility(boolean  visibleButton) {
+        // You can add your conditions here to set the visibility of buttons dynamically
+        boolean isVisible = visibleButton;
+        cmdEdit.setVisible(isVisible);
+        cmdDelete.setVisible(isVisible);
+      
+    }
+    
+     public Action(ModelActionStudent data) {
+        initComponents();
+        setOpaque(false);
+        this.student = data.getStudent();
+        cmdEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+               
+                data.getEvent().update(data.getStudent());
+            }
+        });
+        cmdDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+             
+                data.getEvent().delete(student);
+            }
+        });
+        cmdView.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                data.getEvent().view(data.getStudent());
+            }
+        });
+    }
+     
+      public Action(ModelActionCertificate data) {
+        initComponents();
+        setOpaque(false);
+        this.certificate = data.getCertificate();
+        cmdEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+               
+                data.getEvent().update(data.getCertificate());
+            }
+        });
+        cmdDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+             
+                data.getEvent().delete(certificate);
+            }
+        });
+        cmdView.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                data.getEvent().view(data.getCertificate());
+            }
+        });
+    } 
     @Override
     protected void paintComponent(Graphics grphcs) {
         super.paintComponent(grphcs);

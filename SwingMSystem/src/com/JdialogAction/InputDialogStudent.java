@@ -4,17 +4,21 @@
  */
 package com.JdialogAction;
 
-import com.Dao.UserDao;
-import com.model.ModelUser;
+import com.Dao.StudentDao;
+
+import com.model.ModelStudent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 import org.apache.commons.lang3.RandomStringUtils;
 import testing.NewJFrame;
 
@@ -22,14 +26,15 @@ import testing.NewJFrame;
  *
  * @author konod
  */
-public class InputDialog extends javax.swing.JDialog {
+
+public class InputDialogStudent extends javax.swing.JDialog {
 
     /**
      * Creates new form NewJDialog
      */
-    private ModelUser user = null ; 
+    private ModelStudent student = null ; 
     private String relativePath ; 
-    public InputDialog(java.awt.Frame parent, boolean modal) {
+    public InputDialogStudent(java.awt.Frame parent, boolean modal) {
         
         super(parent,modal);
         
@@ -41,9 +46,9 @@ public class InputDialog extends javax.swing.JDialog {
 
     }
 
-    public InputDialog(java.awt.Frame parent, boolean modal , ModelUser user) {
+    public InputDialogStudent(java.awt.Frame parent, boolean modal , ModelStudent user) {
        super(parent,modal);
-      this.user = user ; 
+      this.student = user ; 
     initComponents();
      init();
     setModalityType(ModalityType.APPLICATION_MODAL);
@@ -52,81 +57,74 @@ public class InputDialog extends javax.swing.JDialog {
       
     }
     private void init() {
-      
-           ImageIcon icon;
-      if (user != null && user.getProfilePicture() != null) {
-        icon = new ImageIcon(user.getProfilePicture());
-        String filename = user.getProfilePicture();
-        this.relativePath =  filename.substring(filename.indexOf(File.separator+"src" + File.separator + "com" + File.separator + "Icon")) ; 
-    } else {
-         this.relativePath = File.separator + "src" + File.separator + "com" + File.separator + "ResourceImage" + File.separator + "DefaultUserImage.png";
-        icon = new ImageIcon(getClass().getResource("/com/ResourceImage/DefaultUserImage.png"));
+        
+    PlainDocument phoneDocument = new PlainDocument();
+
+// set the contraint on the phone textflied 
+phoneDocument.setDocumentFilter(new DocumentFilter() {
+    private boolean allowSetText = true;
+
+    @Override
+    public void insertString(DocumentFilter.FilterBypass fb, int offset, String text,
+                             AttributeSet attr) throws BadLocationException {
+        if (isValidInsertion(text, fb, offset)) {
+            super.insertString(fb, offset, text, attr);
+        }
     }
 
-    imageAvatar1.setIcon(icon);
+    @Override
+    public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String text,
+                        AttributeSet attrs) throws BadLocationException {
+        if (isValidReplacement(text, fb, offset, length)) {
+            super.replace(fb, offset, length, text, attrs);
+        }
+    }
+
+    private boolean isValidInsertion(String text, DocumentFilter.FilterBypass fb, int offset) {
+        // Allow setText to bypass the filter only once
+        if (allowSetText) {
+            allowSetText = false; // Disallow setText after the first time
+            return true;
+        }
+
+        // Allow only digits and '+' and ensure total length is less than or equal to 10
+        return (text.matches("[\\d+]") && (fb.getDocument().getLength() + text.length()) <= 10);
+    }
+
+    private boolean isValidReplacement(String text, DocumentFilter.FilterBypass fb, int offset, int length) {
+        // Allow setText to bypass the filter only once
+        if (allowSetText) {
+            allowSetText = false; // Disallow setText after the first time
+            return true;
+        }
+
+        // Allow only digits and '+' and ensure total length is less than or equal to 10
+        return (text.matches("[\\d+]") && (fb.getDocument().getLength() - length + text.length()) <= 10);
+    }
+});
+
+// Set the document to the IconTextField
+        PhoneTextFlied.setDocument(phoneDocument);
+         
+
+       
 
     // Set other user data in UI components
-    if (user != null) {
-        UsernameTextFlied.setText(user.getUserName());
-        PasswordTextFlied.setText(user.getPassword());
-        AgeSpinnerBlock.setValue(user.getAge());
-        PhoneTextFlied.setText(user.getPhoneNumber());
-        int statusIndex = user.getStatus();
-    if (statusIndex >= 0 && statusIndex < StatusCombobox.getItemCount()) {
-        StatusCombobox.setSelectedIndex(statusIndex);
-    }
-
-    int roleIndex = user.getUserRole();
-    if (roleIndex >= 0 && roleIndex < UserRoleCombobox.getItemCount()) {
-        UserRoleCombobox.setSelectedIndex(roleIndex);
-    }
-        // Set other fields...
+    if (student != null) {
+        StudentIdLabel.setText("Student ID : "  +student.getID());
+        StudentTextFlied.setText(student.getName());
+        PhoneTextFlied.setText(student.getPhone());
+        
+MajorCombobox.setSelectedItem(student.getMajor());
+QualityCombobox.setSelectedItem(student.getEducationQuality());
+    // Assuming BeginningYearCombobox and EndYearCombobox are JComboBox<String>
+    BeginningYearCombobox.setSelectedItem(Integer.toString(student.getBeginningYear()));
+    EndYearCombobox.setSelectedItem(Integer.toString(student.getEndYear()));
+        
     }
        
-    }
-    private static String saveImage(File sourceFile) {
-    String destinationFileName = "";
-
-    try {
-        String fileName = sourceFile.getName();
-        String fileExtension = "";
-
-        int dotIndex = fileName.lastIndexOf('.');
-        if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
-            fileExtension = fileName.substring(dotIndex + 1).toLowerCase();
-        }
-
-        BufferedImage image = ImageIO.read(sourceFile);
-        String srcDirectory = System.getProperty("user.dir") + File.separator + "src";
-        String packagePath = "com" + File.separator + "Icon";
-
-        // Create the destination directory if it doesn't exist
-        File directory = new File(srcDirectory, packagePath);
-      
-
-        // Specify the file name for the saved image
-        String ext = "jpg";
-        if ("png".equals(fileExtension)) {
-            ext = "png";
-        }
-
-        destinationFileName = String.format("%s.%s", RandomStringUtils.randomAlphanumeric(8), ext);
-
-        // Create the destination file in the specified directory
-        File destinationFile = new File(directory, destinationFileName);
-     
-        // Write the image to the destination file
-        ImageIO.write(image, ext, destinationFile);
-
-        // Get the relative path to the saved image
-        String imagePath = srcDirectory +File.separator+ packagePath + File.separator + destinationFileName; 
-        return imagePath;
-    } catch (IOException ex) {
-        Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
-    }
-
-    return "";
 }
+    
 
 
     /**
@@ -139,9 +137,8 @@ public class InputDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        PasswordTextFlied = new com.CustomComponent.IconTextField();
-        UsernameTextFlied = new com.CustomComponent.IconTextField();
         PhoneTextFlied = new com.CustomComponent.IconTextField();
+        StudentTextFlied = new com.CustomComponent.IconTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -149,24 +146,16 @@ public class InputDialog extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        imageAvatar1 = new com.raven.swing.ImageAvatar();
+        StudentIdLabel = new javax.swing.JLabel();
         SubmitButton = new javax.swing.JButton();
-        AgeSpinnerBlock = new javax.swing.JSpinner();
         jLabel7 = new javax.swing.JLabel();
-        StatusCombobox = new javax.swing.JComboBox<>();
-        UserRoleCombobox = new javax.swing.JComboBox<>();
+        MajorCombobox = new javax.swing.JComboBox<>();
+        EndYearCombobox = new javax.swing.JComboBox<>();
         ErrorTextFlied = new javax.swing.JLabel();
+        QualityCombobox = new javax.swing.JComboBox<>();
+        BeginningYearCombobox = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        PasswordTextFlied.setPreferredSize(new java.awt.Dimension(200, 30));
-        PasswordTextFlied.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PasswordTextFliedActionPerformed(evt);
-            }
-        });
-
-        UsernameTextFlied.setPreferredSize(new java.awt.Dimension(200, 30));
 
         PhoneTextFlied.setPreferredSize(new java.awt.Dimension(200, 30));
         PhoneTextFlied.addActionListener(new java.awt.event.ActionListener() {
@@ -175,50 +164,54 @@ public class InputDialog extends javax.swing.JDialog {
             }
         });
 
+        StudentTextFlied.setPreferredSize(new java.awt.Dimension(200, 30));
+
         jLabel1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel1.setText("UserName ");
+        jLabel1.setText("StudentName ");
 
         jLabel2.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 204, 204));
 
         jLabel3.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel3.setText("Password ");
+        jLabel3.setText("Phone");
 
         jLabel4.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel4.setText("Status ");
+        jLabel4.setText("Beginning Year ");
 
         jLabel5.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel5.setText("PhoneNumber ");
+        jLabel5.setText("Major");
 
         jLabel6.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel6.setText("Age");
+        jLabel6.setText("Education Quality");
 
-        imageAvatar1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                imageAvatar1MouseClicked(evt);
-            }
-        });
+        StudentIdLabel.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        StudentIdLabel.setForeground(new java.awt.Color(0, 204, 204));
+        StudentIdLabel.setText("Student ID : None");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(127, 127, 127)
-                .addComponent(imageAvatar1, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGap(0, 458, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(133, 133, 133)
+                    .addComponent(StudentIdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(133, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(imageAvatar1, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(39, Short.MAX_VALUE))
+            .addGap(0, 219, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(88, 88, 88)
+                    .addComponent(StudentIdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(89, Short.MAX_VALUE)))
         );
 
         SubmitButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -232,64 +225,71 @@ public class InputDialog extends javax.swing.JDialog {
 
         jLabel7.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel7.setText("UserRole ");
+        jLabel7.setText("End Year");
 
-        StatusCombobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Normal", "Block" }));
+        MajorCombobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FL", "ID", "AC", "SSH", "EE", "IT", "AS", "BA", "CE", "EHS LC", "FB", "MT", "SS", "LW", "DP" }));
 
-        UserRoleCombobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Manager", "Employee" }));
+        EndYearCombobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031", "2032", "2033", "2034", "2035", "2036", "2037", "2038", "2039", "2040", "2041", "2042", "2043", "2044", "2045", "2046", "2047", "2048", "2049", "2050", "2051", "2052", "2053", "2054", "2055", "2056", "2057", "2058", "2059", "2060", "2061", "2062", "2063", "2064", "2065", "2066", "2067", "2068", "2069", "2070", "2071", "2072", "2073", "2074", "2075", "2076", "2077", "2078", "2079", "2080", "2081", "2082", "2083", "2084", "2085", "2086", "2087", "2088", "2089", "2090", "2091", "2092", "2093", "2094", "2095", "2096", "2097", "2098", "2099" }));
 
         ErrorTextFlied.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         ErrorTextFlied.setForeground(new java.awt.Color(255, 51, 51));
+
+        QualityCombobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "RU", "JP", "HQ" }));
+
+        BeginningYearCombobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031", "2032", "2033", "2034", "2035", "2036", "2037", "2038", "2039", "2040", "2041", "2042", "2043", "2044", "2045", "2046", "2047", "2048", "2049", "2050", "2051", "2052", "2053", "2054", "2055", "2056", "2057", "2058", "2059", "2060", "2061", "2062", "2063", "2064", "2065", "2066", "2067", "2068", "2069", "2070", "2071", "2072", "2073", "2074", "2075", "2076", "2077", "2078", "2079", "2080", "2081", "2082", "2083", "2084", "2085", "2086", "2087", "2088", "2089", "2090", "2091", "2092", "2093", "2094", "2095", "2096", "2097", "2098", "2099" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2)
+                        .addGap(331, 331, 331))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(StudentTextFlied, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(PhoneTextFlied, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(BeginningYearCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel7)
+                                    .addComponent(EndYearCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(161, 161, 161)
                                 .addComponent(SubmitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(StatusCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(UserRoleCombobox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(UsernameTextFlied, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel1))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(PasswordTextFlied, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel3)))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel2)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel6)
-                                        .addGap(165, 165, 165))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 152, Short.MAX_VALUE)
-                                        .addComponent(jLabel7)
-                                        .addGap(114, 114, 114))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(PhoneTextFlied, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(AgeSpinnerBlock))))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGap(116, 116, 116)
-                                .addComponent(ErrorTextFlied, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 18, Short.MAX_VALUE)))
+                                .addComponent(ErrorTextFlied, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(24, 24, 24)
+                                .addComponent(MajorCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel6)
+                                    .addComponent(QualityCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 22, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -303,27 +303,27 @@ public class InputDialog extends javax.swing.JDialog {
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(PasswordTextFlied, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(UsernameTextFlied, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(PhoneTextFlied, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(StudentTextFlied, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel5)
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(PhoneTextFlied, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(AgeSpinnerBlock))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(QualityCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(MajorCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(StatusCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(UserRoleCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(EndYearCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BeginningYearCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
-                .addComponent(ErrorTextFlied, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                .addComponent(ErrorTextFlied, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(SubmitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43))
@@ -333,80 +333,58 @@ public class InputDialog extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void SubmitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SubmitButtonActionPerformed
+
+String username = StudentTextFlied.getText();
+String phone = PhoneTextFlied.getText();
+
+try {
+    // Parse beginning year and end year
+    int beginningYear = Integer.parseInt(BeginningYearCombobox.getSelectedItem().toString());
+    int endYear = Integer.parseInt(EndYearCombobox.getSelectedItem().toString());
+
+    // Validate username and phone are not empty
+    if (username.isEmpty() || phone.isEmpty()) {
+        ErrorTextFlied.setText("All fields must be filled");
+        return;
+    }
+
+    // Validate beginning year and end year
+    if (beginningYear < 2000 || beginningYear > 2099 || endYear < 2000 || endYear > 2099) {
+        ErrorTextFlied.setText("Invalid year");
+        return;
+    }
+
+    // Validate beginning year is not greater than end year
+    if (beginningYear > endYear) {
+        ErrorTextFlied.setText("Start year cannot be greater than end year");
+        return;
+    }
+
+    // Your existing UserDao instantiation
+    StudentDao studentDao = new StudentDao();
+
+    // Add or update the user based on your logic
+    if (student == null) {
+        studentDao.addStudent(username, beginningYear, endYear, MajorCombobox.getSelectedItem().toString(), 
+            QualityCombobox.getSelectedItem().toString(), phone);
+    } else {
+        studentDao.updateStudent(student.getID(), username, beginningYear, endYear, 
+            MajorCombobox.getSelectedItem().toString(), QualityCombobox.getSelectedItem().toString(), phone);
+    }
+
+    this.dispose(); // Close the current window
+
+} catch (NumberFormatException e) {
+    // Display an error message if the entered year is not a valid number
+    ErrorTextFlied.setText("Invalid year");
+}
+
+    }//GEN-LAST:event_SubmitButtonActionPerformed
+
     private void PhoneTextFliedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PhoneTextFliedActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_PhoneTextFliedActionPerformed
-
-    private void PasswordTextFliedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordTextFliedActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_PasswordTextFliedActionPerformed
-
-    private void SubmitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SubmitButtonActionPerformed
-     String username = UsernameTextFlied.getText();
-    String password = PasswordTextFlied.getText();
-    String phone = PhoneTextFlied.getText();
-    String ageText = AgeSpinnerBlock.getValue().toString();
-    int statusIndex = StatusCombobox.getSelectedIndex();
-    int userRoleIndex = UserRoleCombobox.getSelectedIndex();
-    System.out.println("\n this is status"+statusIndex);        
-    System.out.println("\n this is userrole"+ userRoleIndex);
-
-    try {
-        int age = Integer.parseInt(ageText);
-
-        if (username.isEmpty() || password.isEmpty() || phone.isEmpty() ) {
-            // Display an error message if any field is empty
-            ErrorTextFlied.setText("All fields must be filled");
-        } else if (age <= 0 || age > 150) {
-            // Display an error message if age is not in the correct range
-            ErrorTextFlied.setText("Invalid age");
-        } else {
-            
-             UserDao userDao = new UserDao(); // Instantiate your UserDao
-            
-
-            if (user == null) {
-                // User is null, add a new user
-                userDao.addUser(username, password, this.relativePath, age, phone, statusIndex, userRoleIndex);
-            } else {
-                // User is not null, update the existing user
-                userDao.updateUser(user.getUserID(), username, password, this.relativePath, age, phone, statusIndex, userRoleIndex);
-            }
-
-            this.dispose();
-        }
-    } catch (NumberFormatException e) {
-        // Display an error message if the age is not a valid number
-        ErrorTextFlied.setText("Invalid age");
-    }
-    }//GEN-LAST:event_SubmitButtonActionPerformed
-
-    private void imageAvatar1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imageAvatar1MouseClicked
-        JFileChooser fileChooser = new JFileChooser();
-        int result = fileChooser.showOpenDialog(InputDialog.this);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            
-            // Load and display the selected image
-            File selectedFile = fileChooser.getSelectedFile();
-                String filename = saveImage(selectedFile);
-                this.relativePath = filename.substring(filename.indexOf(File.separator+"src" + File.separator + "com" + File.separator + "Icon"));
-               
-
-                // Load the saved image using the absolute file path
-               
-            
-            try {
-                // Read the image using ImageIO
-                ImageIcon imageIcon = new ImageIcon(ImageIO.read(selectedFile));
-                imageAvatar1.setIcon(imageIcon);
-                pack();
-
-                // You can add code here to save the selected image or perform other actions
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }//GEN-LAST:event_imageAvatar1MouseClicked
   
 
     /**
@@ -426,14 +404,16 @@ public class InputDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(InputDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InputDialogStudent.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(InputDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InputDialogStudent.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(InputDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InputDialogStudent.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(InputDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InputDialogStudent.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
@@ -441,7 +421,7 @@ public class InputDialog extends javax.swing.JDialog {
         java.awt.EventQueue.invokeLater(new Runnable() {
            public void run() {
                 
-                InputDialog dialog = new InputDialog(null, true);
+                InputDialogStudent dialog = new InputDialogStudent(null, true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -454,15 +434,15 @@ public class InputDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSpinner AgeSpinnerBlock;
+    private javax.swing.JComboBox<String> BeginningYearCombobox;
+    private javax.swing.JComboBox<String> EndYearCombobox;
     private javax.swing.JLabel ErrorTextFlied;
-    private com.CustomComponent.IconTextField PasswordTextFlied;
+    private javax.swing.JComboBox<String> MajorCombobox;
     private com.CustomComponent.IconTextField PhoneTextFlied;
-    private javax.swing.JComboBox<String> StatusCombobox;
+    private javax.swing.JComboBox<String> QualityCombobox;
+    private javax.swing.JLabel StudentIdLabel;
+    private com.CustomComponent.IconTextField StudentTextFlied;
     private javax.swing.JButton SubmitButton;
-    private javax.swing.JComboBox<String> UserRoleCombobox;
-    private com.CustomComponent.IconTextField UsernameTextFlied;
-    private com.raven.swing.ImageAvatar imageAvatar1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

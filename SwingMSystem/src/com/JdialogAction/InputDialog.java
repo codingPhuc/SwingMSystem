@@ -15,6 +15,10 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 import org.apache.commons.lang3.RandomStringUtils;
 import testing.NewJFrame;
 
@@ -52,26 +56,76 @@ public class InputDialog extends javax.swing.JDialog {
       
     }
     private void init() {
-      
+        PlainDocument phoneDocument = new PlainDocument();
+
+// set the contraint on the phone textflied 
+phoneDocument.setDocumentFilter(new DocumentFilter() {
+ private boolean allowSetText = true;
+
+    @Override
+    public void insertString(DocumentFilter.FilterBypass fb, int offset, String text,
+                             AttributeSet attr) throws BadLocationException {
+        if (isValidInsertion(text, fb, offset)) {
+            super.insertString(fb, offset, text, attr);
+        }
+    }
+
+    @Override
+    public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String text,
+                        AttributeSet attrs) throws BadLocationException {
+        if (isValidReplacement(text, fb, offset, length)) {
+            super.replace(fb, offset, length, text, attrs);
+        }
+    }
+
+    private boolean isValidInsertion(String text, DocumentFilter.FilterBypass fb, int offset) {
+        // Allow setText to bypass the filter only once
+        if (allowSetText) {
+            allowSetText = false; // Disallow setText after the first time
+            return true;
+        }
+
+        // Allow only digits and '+' and ensure total length is less than or equal to 10
+        return (text.matches("[\\d+]") && (fb.getDocument().getLength() + text.length()) <= 10);
+    }
+
+    private boolean isValidReplacement(String text, DocumentFilter.FilterBypass fb, int offset, int length) {
+        // Allow setText to bypass the filter only once
+        if (allowSetText) {
+            allowSetText = false; // Disallow setText after the first time
+            return true;
+        }
+
+        // Allow only digits and '+' and ensure total length is less than or equal to 10
+        return (text.matches("[\\d+]") && (fb.getDocument().getLength() - length + text.length()) <= 10);
+    }
+});
+
+// Set the document to the IconTextField
+        PhoneTextFlied.setDocument(phoneDocument);  
            ImageIcon icon;
       if (user != null && user.getProfilePicture() != null) {
         icon = new ImageIcon(user.getProfilePicture());
         String filename = user.getProfilePicture();
         this.relativePath =  filename.substring(filename.indexOf(File.separator+"src" + File.separator + "com" + File.separator + "Icon")) ; 
     } else {
-         this.relativePath = File.separator + "src" + File.separator + "com" + File.separator + "ResourceImage" + File.separator + "DefaultUserImage.png";
-        icon = new ImageIcon(getClass().getResource("/com/ResourceImage/DefaultUserImage.png"));
+         this.relativePath = File.separator+"src" + File.separator + "com" + File.separator + "Icon" + File.separator + "DefaultUserImage.png";
+
+        icon = new ImageIcon( System.getProperty("user.dir") +this.relativePath);
     }
 
     imageAvatar1.setIcon(icon);
 
-    // Set other user data in UI components
+     
     if (user != null) {
         UsernameTextFlied.setText(user.getUserName());
         PasswordTextFlied.setText(user.getPassword());
         AgeSpinnerBlock.setValue(user.getAge());
         PhoneTextFlied.setText(user.getPhoneNumber());
+      
+        System.out.println("PhoneTextFlied Text: " + PhoneTextFlied.getText());
         int statusIndex = user.getStatus();
+    // set index of combobox 
     if (statusIndex >= 0 && statusIndex < StatusCombobox.getItemCount()) {
         StatusCombobox.setSelectedIndex(statusIndex);
     }

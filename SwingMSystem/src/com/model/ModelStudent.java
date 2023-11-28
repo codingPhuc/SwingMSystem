@@ -1,27 +1,16 @@
 package com.model;
 
-
 import com.EventInterface.EventActionStudent;
-import javax.swing.Icon;
-import com.EventInterface.EventActionUser;
 
 public class ModelStudent {
 
-    private Icon icon; // Retained the icon variable
-    private String ID; // Corresponds to the ID column in the database
-    private String name; // Corresponds to the Name column in the database
-    private String className; // Corresponds to the Class column in the database
-    private String birthDay; // Corresponds to the birthDay column in the database
-    private String address; // Corresponds to the Address column in the database
-    private String phone; // Corresponds to the Phone column in the database
-
-    public Icon getIcon() {
-        return icon;
-    }
-
-    public void setIcon(Icon icon) {
-        this.icon = icon;
-    }
+    private String ID;
+    private String name;
+    private int beginningYear;
+    private int endYear;
+    private String major;
+    private String educationQuality;
+    private String phone;
 
     public String getID() {
         return ID;
@@ -39,28 +28,37 @@ public class ModelStudent {
         this.name = name;
     }
 
-    public String getClassName() {
-        return className;
+   
+    public int getBeginningYear() {
+        return beginningYear;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setBeginningYear(int beginningYear) {
+        this.beginningYear = beginningYear;
     }
 
-    public String getBirthDay() {
-        return birthDay;
+    public int getEndYear() {
+        return endYear;
     }
 
-    public void setBirthDay(String birthDay) {
-        this.birthDay = birthDay;
+    public void setEndYear(int endYear) {
+        this.endYear = endYear;
     }
 
-    public String getAddress() {
-        return address;
+    public String getMajor() {
+        return major;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    public String getEducationQuality() {
+        return educationQuality;
+    }
+
+    public void setEducationQuality(String educationQuality) {
+        this.educationQuality = educationQuality;
     }
 
     public String getPhone() {
@@ -71,19 +69,19 @@ public class ModelStudent {
         this.phone = phone;
     }
 
-    public ModelStudent (Icon icon, String ID, String name, String className, String birthDay, String address, String phone) {
-        this.icon = icon;
+    public ModelStudent(String ID, String name,
+            int beginningYear, int endYear, String major, String educationQuality, String phone) {
         this.ID = ID;
         this.name = name;
-        this.className = className;
-        this.birthDay = birthDay;
-        this.address = address;
+      
+        this.beginningYear = beginningYear;
+        this.endYear = endYear;
+        this.major = major;
+        this.educationQuality = educationQuality;
         this.phone = phone;
     }
 
-    public Object[] toRowTable(EventActionStudent event) {
-       
-        // You can format and return the data as needed for the table
-        return new Object[]{new ModelProfile(icon, name), className, birthDay, address, phone, new ModelActionStudent(this, event)};
+  public Object[] toRowTable(EventActionStudent event) {
+        return new Object[]{ID, name, beginningYear, endYear, major, educationQuality, phone, new ModelActionStudent(this, event)};
     }
 }

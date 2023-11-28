@@ -4,159 +4,105 @@
  */
 package com.ActionPanel;
 
-import com.Dao.LoginHistoryDao;
-import com.Dao.UserDao;
-import java.awt.event.KeyEvent;
-import com.EventInterface.EventActionUser;
-
-import com.model.ModelUser;
+import com.Dao.StudentDao;
+import com.EventInterface.EventActionStudent;
 import com.JdialogAction.InputDialog;
-import com.JdialogAction.LoginHistoryDialog;
+import com.JdialogAction.InputDialogStudent;
+import com.JdialogAction.StudentDetail;
+import com.model.ModelStudent;
+import com.model.ModelUser;
 import java.awt.Frame;
-
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-
-
-
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
-
-
 
 /**
  *
  * @author konod
  */
-public class UserPanel extends javax.swing.JPanel {
-    
-    
-    private final UserDao userDao; 
-    private static InputDialog customDialog;
-
-    private static void openCustomFrame(JPanel parentFrame) {
-        // Create a new JDialog
-        
-//        customDialog.setLayout(new FlowLayout());
-
-        // Components for the custom dialog
-//        JTextField textField = new JTextField(10);
-//        JButton okButton = new JButton("OK");
-//
-//        okButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                // Process the entered value (you can do something with it)
-//                String enteredValue = textField.getText();
-//                System.out.println("Entered value: " + enteredValue);
-//
-//                // Close the custom dialog
-//                customDialog.dispose();
-//
-//                // Set focus back to the parent frame
-//                parentFrame.requestFocus();
-//            }
-//        });
-//
-//        customDialog.add(new JLabel("Enter a value: "));
-//        customDialog.add(textField);
-//        customDialog.add(okButton);
-//
-//        // Set properties for the dialog
-//        customDialog.setSize(300, 150);
-        customDialog.setLocationRelativeTo(parentFrame);
-        customDialog.setVisible(true);
-
-        // Set focus to the text field when the custom dialog is opened
+public class StudentPanel extends javax.swing.JPanel {
+    private final StudentDao studentDao;
+    private ModelUser loginUser ; 
+    /**
+     * Creates new form StudentPanel
+     */
+    public StudentPanel(ModelUser loginUser ) {
+        studentDao = new StudentDao();
+        this.loginUser = loginUser;
+      
+        initComponents();
+         
+        initTableData();
+         if(loginUser.getUserRole() == 1)
+         {   
+             table1.setTableVisible(false);
+             ActionLabel.setVisible(false);
+             UserAddingButton.setVisible(false);
+         }
+            
     }
-    private void Reload()
-    {   
+     private void Reload() {
         table1.ClearTable();
-        init() ; 
-        initTableData() ; 
-        
-        
+        initTableData();
     }
 
-    // the Event that will be pass into the actionButton 
-   private void initTableData() {
-     EventActionUser eventAction = new EventActionUser() {
-        @Override
-        public void delete(ModelUser user) {
-        if(table1.isEditing())
+    private void initTableData() {
+        EventActionStudent eventAction = new EventActionStudent() {
+            @Override
+            public void delete(ModelStudent student) {
+                 if(table1.isEditing())
         {   
             table1.getCellEditor().stopCellEditing();
         }
        
      
-        userDao.deleteUser(user.getUserID());
-        Reload();
-        }
+        studentDao.deleteStudent(student.getID());
+                Reload();
+            }
 
-        @Override
-        public void update(ModelUser user) {
-            if(table1.isEditing())
+            @Override
+            public void update(ModelStudent student) {
+                 if(table1.isEditing())
         {
             table1.getCellEditor().stopCellEditing();
         }
-             InputDialog inputDialog = new InputDialog((Frame) SwingUtilities.getWindowAncestor(table1), true,user);
+             InputDialogStudent inputDialog = new InputDialogStudent((Frame) SwingUtilities.getWindowAncestor(table1), true,student);
 
             inputDialog.setVisible(true);
-          
-            Reload();
-         
-        }
-
-        @Override
-        public void view(ModelUser user) {
-            LoginHistoryDialog logindialog =  new LoginHistoryDialog((Frame) SwingUtilities.getWindowAncestor(table1), true,user) ;
-            logindialog.setVisible(true); 
-            
-            Reload();
-            
-        }
-    };
-     
-
-for (ModelUser user : userDao.getAllEmployeeAndManager())
-    {   
-
-        table1.addRow(user.toRowTable(eventAction));
-    }
-
-   
-}
-   
-   
-    private void init() {
-        // button to add the user 
-        UserAddingButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code to be executed when the button is clicked
-               
+                Reload();
             }
-        });
+
+            @Override
+            public void view(ModelStudent student) {
+                if(table1.isEditing())
+        {
+            table1.getCellEditor().stopCellEditing();
+        }
+                StudentDetail inputDialog = new StudentDetail((Frame) SwingUtilities.getWindowAncestor(table1), true,student,loginUser);
+
+            inputDialog.setVisible(true);
+                Reload();
+            }
+        };
+
+    String selectedMajor = MAJORCOMBOBOX.getSelectedItem().toString();
+    String selectedQuality = QUALITYCOMBOBOX.getSelectedItem().toString();
+
+    // Clear the existing rows in the table
+    table1.ClearTable();
+
+    // Loop through students and filter based on the selected values
+    for (ModelStudent student : studentDao.getAllStudents()) {
+        // Convert major and quality to lowercase for case-insensitive comparison
+        String studentMajor = student.getMajor().toLowerCase();
+        String studentQuality = student.getEducationQuality().toLowerCase();
+
+        // Check if the student matches the selected values
+        if (("ALL".equalsIgnoreCase(selectedMajor) || selectedMajor.equalsIgnoreCase(studentMajor)) &&
+            ("All".equalsIgnoreCase(selectedQuality) || selectedQuality.equalsIgnoreCase(studentQuality))) {
+            table1.addRow(student.toRowTable(eventAction));
+        }
+    }
     }
 
-
-    /**
-     * Creates new form StudentPanel
-     */
-    public UserPanel() {
-        
-        userDao = new UserDao();
-        initComponents();
-        initTableData() ;
-//        table1.removeLastColumn();
-        // pass the event in to the model student 
-//        table1.addRow(new ModelStudent(new ImageIcon(getClass().getResource("/com/raven/icon/profile.jpg")), "Jonh", "Male", "Java", 300).toRowTable(eventAction));
-    }
-    
-     
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -168,19 +114,17 @@ for (ModelUser user : userDao.getAllEmployeeAndManager())
 
         jButton1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        customTextField1 = new com.CustomComponent.CustomTextField();
         jPanel3 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jComboBox3 = new javax.swing.JComboBox<>();
+        MAJORCOMBOBOX = new javax.swing.JComboBox<>();
+        QUALITYCOMBOBOX = new javax.swing.JComboBox<>();
+        customTextField1 = new com.CustomComponent.CustomTextField();
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         lightBule2 = new PaintComponent.LightBule();
         jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        organGradientPaint2 = new PaintComponent.OrganGradientPaint();
-        jLabel2 = new javax.swing.JLabel();
+        blueGradianPain1 = new PaintComponent.BlueGradianPain();
+        ActionLabel = new javax.swing.JLabel();
         UserAddingButton = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -188,57 +132,48 @@ for (ModelUser user : userDao.getAllEmployeeAndManager())
 
         jButton1.setText("jButton1");
 
+        setPreferredSize(new java.awt.Dimension(1058, 741));
         setLayout(new java.awt.BorderLayout());
-
-        customTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                customTextField1KeyPressed(evt);
-            }
-        });
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.X_AXIS));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        MAJORCOMBOBOX.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ALL", "FL", "ID", "AC", "SSH", "EE", "IT", "AS", "BA", "CE", "EHS LC", "FB", "MT", "SS", "LW", "DP" }));
+        MAJORCOMBOBOX.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                MAJORCOMBOBOXActionPerformed(evt);
             }
         });
-        jPanel3.add(jComboBox1);
+        jPanel3.add(MAJORCOMBOBOX);
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox2.setPreferredSize(new java.awt.Dimension(72, 50));
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+        QUALITYCOMBOBOX.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "RU", "JP", "HQ" }));
+        QUALITYCOMBOBOX.setPreferredSize(new java.awt.Dimension(72, 50));
+        QUALITYCOMBOBOX.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox2ActionPerformed(evt);
+                QUALITYCOMBOBOXActionPerformed(evt);
             }
         });
-        jPanel3.add(jComboBox2);
-
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel3.add(jComboBox3);
+        jPanel3.add(QUALITYCOMBOBOX);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(176, 176, 176)
+                .addGap(177, 177, 177)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
                     .addComponent(customTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(218, Short.MAX_VALUE))
+                .addContainerGap(205, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(customTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(27, Short.MAX_VALUE)
+                .addComponent(customTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
@@ -250,93 +185,74 @@ for (ModelUser user : userDao.getAllEmployeeAndManager())
         jLabel1.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(153, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("User Count :");
+        jLabel1.setText("Student Count :");
 
         jLabel4.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(153, 255, 255));
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("Employee Number : 0");
-
-        jLabel5.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(153, 255, 255));
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("Manager Number : 0");
+        jLabel4.setText("Student Number : 0");
 
         javax.swing.GroupLayout lightBule2Layout = new javax.swing.GroupLayout(lightBule2);
         lightBule2.setLayout(lightBule2Layout);
         lightBule2Layout.setHorizontalGroup(
             lightBule2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(lightBule2Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(lightBule2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(lightBule2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1))
-                    .addGroup(lightBule2Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jLabel4)))
-                .addContainerGap())
-            .addGroup(lightBule2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(lightBule2Layout.createSequentialGroup()
-                    .addGap(16, 16, 16)
-                    .addComponent(jLabel5)
-                    .addContainerGap(84, Short.MAX_VALUE)))
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel4))
+                .addContainerGap(103, Short.MAX_VALUE))
         );
         lightBule2Layout.setVerticalGroup(
             lightBule2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(lightBule2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(29, 29, 29)
                 .addComponent(jLabel1)
-                .addGap(87, 87, 87)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
-                .addContainerGap())
-            .addGroup(lightBule2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(lightBule2Layout.createSequentialGroup()
-                    .addGap(62, 62, 62)
-                    .addComponent(jLabel5)
-                    .addContainerGap(190, Short.MAX_VALUE)))
+                .addContainerGap(189, Short.MAX_VALUE))
         );
 
         jPanel4.add(lightBule2);
 
-        organGradientPaint2.setMinimumSize(new java.awt.Dimension(330, 280));
-        organGradientPaint2.setPreferredSize(new java.awt.Dimension(330, 280));
+        blueGradianPain1.setPreferredSize(new java.awt.Dimension(330, 280));
 
-        jLabel2.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(153, 255, 255));
-        jLabel2.setText("User Action :");
+        ActionLabel.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        ActionLabel.setForeground(new java.awt.Color(153, 255, 255));
+        ActionLabel.setText("Student Action :");
 
         UserAddingButton.setBackground(new java.awt.Color(0, 153, 153));
         UserAddingButton.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        UserAddingButton.setForeground(new java.awt.Color(153, 255, 255));
-        UserAddingButton.setText("Add User");
+        UserAddingButton.setForeground(new java.awt.Color(0, 102, 102));
+        UserAddingButton.setText("Add Student");
         UserAddingButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 UserAddingButtonActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout organGradientPaint2Layout = new javax.swing.GroupLayout(organGradientPaint2);
-        organGradientPaint2.setLayout(organGradientPaint2Layout);
-        organGradientPaint2Layout.setHorizontalGroup(
-            organGradientPaint2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(organGradientPaint2Layout.createSequentialGroup()
+        javax.swing.GroupLayout blueGradianPain1Layout = new javax.swing.GroupLayout(blueGradianPain1);
+        blueGradianPain1.setLayout(blueGradianPain1Layout);
+        blueGradianPain1Layout.setHorizontalGroup(
+            blueGradianPain1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(blueGradianPain1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(organGradientPaint2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
+                .addGroup(blueGradianPain1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ActionLabel)
                     .addComponent(UserAddingButton, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(106, Short.MAX_VALUE))
         );
-        organGradientPaint2Layout.setVerticalGroup(
-            organGradientPaint2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(organGradientPaint2Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel2)
+        blueGradianPain1Layout.setVerticalGroup(
+            blueGradianPain1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(blueGradianPain1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(ActionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(UserAddingButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(182, Short.MAX_VALUE))
+                .addContainerGap(197, Short.MAX_VALUE))
         );
 
-        jPanel4.add(organGradientPaint2);
+        jPanel4.add(blueGradianPain1);
 
         jPanel5.setLayout(new java.awt.BorderLayout());
 
@@ -345,17 +261,9 @@ for (ModelUser user : userDao.getAllEmployeeAndManager())
 
             },
             new String [] {
-                "    ICON", "NAME", "BIRTH DAY", "PHONE ", "STATUS", "ROLE", "ACTION "
+                "ID", "NAME", "START YEAR", "END YEAR", "MAJOR", "EQ", "PHONE", "ACTION"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, true
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
         jScrollPane2.setViewportView(table1);
 
         jPanel5.add(jScrollPane2, java.awt.BorderLayout.CENTER);
@@ -365,72 +273,64 @@ for (ModelUser user : userDao.getAllEmployeeAndManager())
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 694, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(0, 19, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29))))
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 612, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         add(jPanel2, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox2ActionPerformed
-
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
-
     private void customTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_customTextField1KeyPressed
-         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                    // This code will be executed when Enter key is pressed
-                    String text = customTextField1.getText();
-                    System.out.println("Entered Text: " + text);
-                    customTextField1.setText("");
-                }
+     
         
     }//GEN-LAST:event_customTextField1KeyPressed
     
+    private void MAJORCOMBOBOXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MAJORCOMBOBOXActionPerformed
+    Reload() ;
+// TODO add your handling code here:
+    }//GEN-LAST:event_MAJORCOMBOBOXActionPerformed
+
     private void UserAddingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserAddingButtonActionPerformed
-       if(table1.isEditing())
+        if(table1.isEditing())
         {
             table1.getCellEditor().stopCellEditing();
         }
-            InputDialog inputDialog = new InputDialog((Frame) SwingUtilities.getWindowAncestor(table1), true);
+        InputDialogStudent inputDialog = new InputDialogStudent((Frame) SwingUtilities.getWindowAncestor(table1), true);
 
-            inputDialog.setVisible(true);
-          
-            Reload();   
-  // Create a new JDialog
-     
+        inputDialog.setVisible(true);
+
+        Reload();
+        // Create a new JDialog
     }//GEN-LAST:event_UserAddingButtonActionPerformed
+
+    private void QUALITYCOMBOBOXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QUALITYCOMBOBOXActionPerformed
+    Reload() ;
+// TODO add your handling code here:
+    }//GEN-LAST:event_QUALITYCOMBOBOXActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel ActionLabel;
+    private javax.swing.JComboBox<String> MAJORCOMBOBOX;
+    private javax.swing.JComboBox<String> QUALITYCOMBOBOX;
     private javax.swing.JButton UserAddingButton;
+    private PaintComponent.BlueGradianPain blueGradianPain1;
     private com.CustomComponent.CustomTextField customTextField1;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -438,7 +338,6 @@ for (ModelUser user : userDao.getAllEmployeeAndManager())
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane2;
     private PaintComponent.LightBule lightBule2;
-    private PaintComponent.OrganGradientPaint organGradientPaint2;
     private com.swing.table.Table table1;
     // End of variables declaration//GEN-END:variables
 
