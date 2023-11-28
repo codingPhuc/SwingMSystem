@@ -138,46 +138,7 @@ Navigate to the ConnectionConfig class in the com.Dao folder. Adjust the connect
 # Step 3: Database Setup
 Use a MySQL database tool (e.g., XAMPP) to execute the following SQL queries. This will create the necessary tables for the application:
 
-sql
-Copy code
-CREATE TABLE Student (
-    ID VARCHAR(10) PRIMARY KEY,
-    Name VARCHAR(250),
-    BeginningYear INT,
-    EndYear INT,
-    Major VARCHAR(250),
-    EducationQuality VARCHAR(10),
-    Phone VARCHAR(10)
-);
-
-CREATE TABLE UserManagement (
-    UserID INT AUTO_INCREMENT PRIMARY KEY,
-    UserName VARCHAR(250),
-    Password VARCHAR(255), -- Assuming you're storing hashed passwords
-    ProfilePicture MEDIUMTEXT,
-    Age INT,
-    PhoneNumber VARCHAR(10),
-    Status INT CHECK (Status IN (0, 1)), -- 0: Normal, 1: Blocked
-    UserRole INT CHECK (UserRole IN (0, 1, 2)) -- 0: Admin, 1: Manager, 2: Employee
-);
-
-CREATE TABLE LoginHistory (
-    LoginHistoryID INT AUTO_INCREMENT PRIMARY KEY,
-    UserID INT,
-    TimeLogin DATETIME,
-    CONSTRAINT FK_LoginHistory_UserID FOREIGN KEY (UserID)
-    REFERENCES UserManagement(UserID) ON DELETE CASCADE
-);
-
-CREATE TABLE CertificateManagement (
-    CertificateID INT AUTO_INCREMENT PRIMARY KEY,
-    StudentID VARCHAR(10),
-    FOREIGN KEY (StudentID) REFERENCES Student(ID) ON DELETE CASCADE,
-    CertificateName VARCHAR(250),
-    IssueDate DATE,
-    ExpiryDate DATE,
-    Grade FLOAT 
-);
+go to database.txt to get the  mysql code 
 Save to grepper
 # Step 4: Run the Application
 Go to the main folder of the application and run the main function to start the Student Management Information System.
