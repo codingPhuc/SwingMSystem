@@ -2,9 +2,11 @@ package main;
 
 import com.Dao.LoginHistoryDao;
 import com.Dao.UserDao;
-import com.formdev.flatlaf.FlatLightLaf;
-import com.model.ModelUser;
 import com.MainComponet.testFrame;
+import com.formdev.flatlaf.FlatLightLaf;
+
+import com.model.ModelUser;
+
 import java.awt.Color;
 import java.time.LocalDateTime;
 import javax.swing.UIManager;

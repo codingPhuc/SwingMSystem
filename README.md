@@ -10,6 +10,14 @@ Copy code
 
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.formdev/flatlaf -->
+        <dependency>
+         <groupId>com.formdev</groupId>
+         <artifactId>flatlaf</artifactId>
+        <version>3.2.5</version>
+        <scope>runtime</scope>
+        </dependency>
+
         <!-- MigLayout -->
         <dependency>
             <groupId>com.miglayout</groupId>
