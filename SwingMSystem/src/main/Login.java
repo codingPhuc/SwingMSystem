@@ -2,7 +2,7 @@ package main;
 
 import com.Dao.LoginHistoryDao;
 import com.Dao.UserDao;
-import com.MainComponet.testFrame;
+import com.MainComponet.MainFrame;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import com.model.ModelUser;
@@ -159,7 +159,7 @@ public class Login extends javax.swing.JFrame {
         // Open the TestFrame upon successful login
          java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new testFrame(loginUser).setVisible(true);
+                new MainFrame(loginUser).setVisible(true);
             }
         });
 //        testFrame testFrame = new testFrame(loginUser);

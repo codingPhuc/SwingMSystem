@@ -28,7 +28,7 @@ import org.jdesktop.animation.timing.TimingTargetAdapter;
  *
  * @author konod
  */
-public class testFrame extends javax.swing.JFrame {
+public class MainFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form NewJFrame1
@@ -37,7 +37,7 @@ public class testFrame extends javax.swing.JFrame {
     private  Animator  animator ; 
     private  mainPanel  mainPanel ;
     private final ModelUser LoginUser ;
-    public testFrame(ModelUser LoginUser) {
+    public MainFrame(ModelUser LoginUser) {
          
         this.LoginUser =LoginUser ; 
 
@@ -215,14 +215,16 @@ public class testFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(testFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(testFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(testFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(testFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         
@@ -231,7 +233,7 @@ public class testFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new testFrame(new ModelUser(40 , "admin", "admin", "\\src\\com\\Icon\\ZgGN0upg.png", 25 ,"1234567890",0,2)).setVisible(true);
+                new MainFrame(new ModelUser(40 , "admin", "admin", "\\src\\com\\Icon\\ZgGN0upg.png", 25 ,"1234567890",0,2)).setVisible(true);
             }
         });
     }

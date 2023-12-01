@@ -14,7 +14,7 @@ public class Profile extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pic = new com.raven.swing.ImageAvatar();
+        pic = new com.CustomizeUIComponent.ImageAvatar();
 
         setPreferredSize(new java.awt.Dimension(34, 34));
         setLayout(new java.awt.BorderLayout());
@@ -22,6 +22,6 @@ public class Profile extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.raven.swing.ImageAvatar pic;
+    private com.CustomizeUIComponent.ImageAvatar pic;
     // End of variables declaration//GEN-END:variables
 }

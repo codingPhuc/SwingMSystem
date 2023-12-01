@@ -88,7 +88,7 @@ public class StudentPanel extends javax.swing.JPanel {
 
     // Clear the existing rows in the table
     table1.ClearTable();
-
+    int CountStudent =0 ; 
     // Loop through students and filter based on the selected values
     for (ModelStudent student : studentDao.getAllStudents()) {
         // Convert major and quality to lowercase for case-insensitive comparison
@@ -99,8 +99,10 @@ public class StudentPanel extends javax.swing.JPanel {
         if (("ALL".equalsIgnoreCase(selectedMajor) || selectedMajor.equalsIgnoreCase(studentMajor)) &&
             ("All".equalsIgnoreCase(selectedQuality) || selectedQuality.equalsIgnoreCase(studentQuality))) {
             table1.addRow(student.toRowTable(eventAction));
+            CountStudent++ ; 
         }
     }
+    jLabel4.setText("Student Number : "+CountStudent);
     }
 
     /**

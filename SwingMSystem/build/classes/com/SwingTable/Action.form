@@ -16,7 +16,7 @@
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
   <SubComponents>
-    <Component class="com.raven.swing.ActionButton" name="cmdDelete">
+    <Component class="com.CustomizeUIComponent.ActionButton" name="cmdDelete">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/com/ResourceImage/TableDeleteAction.png"/>
@@ -26,14 +26,14 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmdDeleteActionPerformed"/>
       </Events>
     </Component>
-    <Component class="com.raven.swing.ActionButton" name="cmdView">
+    <Component class="com.CustomizeUIComponent.ActionButton" name="cmdView">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/com/ResourceImage/TableViewAction.png"/>
         </Property>
       </Properties>
     </Component>
-    <Component class="com.raven.swing.ActionButton" name="cmdEdit">
+    <Component class="com.CustomizeUIComponent.ActionButton" name="cmdEdit">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/com/ResourceImage/TableeditAction.png"/>

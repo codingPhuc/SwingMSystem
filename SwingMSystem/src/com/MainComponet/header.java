@@ -99,7 +99,7 @@ public class header extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        imageAvatar1 = new com.raven.swing.ImageAvatar();
+        imageAvatar1 = new com.CustomizeUIComponent.ImageAvatar();
         MenuButtons = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
@@ -181,7 +181,7 @@ public class header extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton MenuButtons;
-    private com.raven.swing.ImageAvatar imageAvatar1;
+    private com.CustomizeUIComponent.ImageAvatar imageAvatar1;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 

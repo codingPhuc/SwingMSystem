@@ -248,7 +248,7 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="com.raven.swing.ImageAvatar" name="imageAvatar1">
+        <Container class="com.CustomizeUIComponent.ImageAvatar" name="imageAvatar1">
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="imageAvatar1MouseClicked"/>
           </Events>

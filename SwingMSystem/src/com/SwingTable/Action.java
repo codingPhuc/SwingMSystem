@@ -117,9 +117,9 @@ public class Action extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        cmdDelete = new com.raven.swing.ActionButton();
-        cmdView = new com.raven.swing.ActionButton();
-        cmdEdit = new com.raven.swing.ActionButton();
+        cmdDelete = new com.CustomizeUIComponent.ActionButton();
+        cmdView = new com.CustomizeUIComponent.ActionButton();
+        cmdEdit = new com.CustomizeUIComponent.ActionButton();
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
@@ -143,8 +143,8 @@ public class Action extends javax.swing.JPanel {
     }//GEN-LAST:event_cmdDeleteActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.raven.swing.ActionButton cmdDelete;
-    private com.raven.swing.ActionButton cmdEdit;
-    private com.raven.swing.ActionButton cmdView;
+    private com.CustomizeUIComponent.ActionButton cmdDelete;
+    private com.CustomizeUIComponent.ActionButton cmdEdit;
+    private com.CustomizeUIComponent.ActionButton cmdView;
     // End of variables declaration//GEN-END:variables
 }

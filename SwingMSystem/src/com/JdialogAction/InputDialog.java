@@ -203,7 +203,7 @@ phoneDocument.setDocumentFilter(new DocumentFilter() {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        imageAvatar1 = new com.raven.swing.ImageAvatar();
+        imageAvatar1 = new com.CustomizeUIComponent.ImageAvatar();
         SubmitButton = new javax.swing.JButton();
         AgeSpinnerBlock = new javax.swing.JSpinner();
         jLabel7 = new javax.swing.JLabel();
@@ -516,7 +516,7 @@ phoneDocument.setDocumentFilter(new DocumentFilter() {
     private javax.swing.JButton SubmitButton;
     private javax.swing.JComboBox<String> UserRoleCombobox;
     private com.CustomComponent.IconTextField UsernameTextFlied;
-    private com.raven.swing.ImageAvatar imageAvatar1;
+    private com.CustomizeUIComponent.ImageAvatar imageAvatar1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

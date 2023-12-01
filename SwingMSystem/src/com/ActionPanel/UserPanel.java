@@ -4,18 +4,12 @@
  */
 package com.ActionPanel;
 
-import com.Dao.StudentDao;
 import com.Dao.UserDao;
-import com.EventInterface.EventActionStudent;
 import com.EventInterface.EventActionUser;
 import com.JdialogAction.InputDialog;
-import com.JdialogAction.InputDialogStudent;
 import com.JdialogAction.LoginHistoryDialog;
-import com.model.ModelStudent;
 import com.model.ModelUser;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -54,6 +48,7 @@ public class UserPanel extends javax.swing.JPanel {
 
     // the Event that will be pass into the actionButton 
    private void initTableData() {
+       
      EventActionUser eventAction = new EventActionUser() {
         @Override
         public void delete(ModelUser user) {
@@ -91,7 +86,7 @@ public class UserPanel extends javax.swing.JPanel {
         }
     };
      
-
+    int CountUser =0 ; 
   // Get the selected values from the combo boxes
     String selectedStatus = UserStatusCombobox.getSelectedItem().toString();
     String selectedRole = UserRoleCombobox.getSelectedItem().toString();
@@ -104,8 +99,10 @@ public class UserPanel extends javax.swing.JPanel {
         if (("none".equalsIgnoreCase(selectedStatus) || selectedStatus.equalsIgnoreCase(userStatus)) &&
     ("All".equalsIgnoreCase(selectedRole) || selectedRole.equalsIgnoreCase(userRole))) {
     usertable.addRow(user.toRowTable(eventAction));
+    CountUser++ ; 
 }
     }
+    jLabel4.setText("User Number : "+CountUser);
 
    
 }

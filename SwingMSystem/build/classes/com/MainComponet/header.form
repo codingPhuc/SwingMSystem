@@ -46,7 +46,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="com.raven.swing.ImageAvatar" name="imageAvatar1">
+    <Container class="com.CustomizeUIComponent.ImageAvatar" name="imageAvatar1">
       <Properties>
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[48, 48]"/>
