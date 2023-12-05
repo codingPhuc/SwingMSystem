@@ -51,6 +51,8 @@ public class SideBar extends javax.swing.JPanel {
     private final MigLayout layout;
     private EventMenuItemSelected event;
     private boolean showMenu = true;
+    private  boolean  adminRole = false ; 
+ 
 //    protected void paintChildren(Graphics grphcs) {
 //        Graphics2D g2 = (Graphics2D) grphcs;
 //        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -81,9 +83,12 @@ protected void paintChildren(Graphics grphcs) {
  public void initMenuItem() {
       
         addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarHome.png")), "Home"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarUser.png")), "User"));
+//        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarUser.png")), "User"));
         addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarStudent.png")), "Student"));
         addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarReport.png")), "Report"));
+        if (this.adminRole) {
+        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarUser.png")), "User"));
+    }
     }
  private void addMenu(ModelMenu menu) {
        
@@ -169,7 +174,11 @@ protected void paintChildren(Graphics grphcs) {
     private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 
-    boolean isShowMenu() {
-        return this.showMenu ; // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public boolean isShowMenu() {
+        return this.showMenu; 
+    }
+    public void AdminRole()
+    {
+        this.adminRole = true ;
     }
 }

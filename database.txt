@@ -20,7 +20,7 @@ CREATE TABLE UserManagement (
     Age INT,
     PhoneNumber VARCHAR(10),
     Status INT CHECK (Status IN (0, 1)), -- 0: Normal, 1: Blocked
-    UserRole INT CHECK (UserRole IN (0, 1, 2)) -- 0: Admin, 1: Manager, 2: Employee
+    UserRole INT CHECK (UserRole IN (0, 1, 2)) -- 2: Admin, 0: Manager, 1: Employee
 );
 
 CREATE TABLE LoginHistory (
