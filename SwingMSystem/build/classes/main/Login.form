@@ -118,6 +118,9 @@
               <Properties>
                 <Property name="hint" type="java.lang.String" value="User Name"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="Login_txtUser"/>
+              </AuxValues>
             </Component>
             <Component class="swing.PasswordField" name="txtPassword">
               <Properties>

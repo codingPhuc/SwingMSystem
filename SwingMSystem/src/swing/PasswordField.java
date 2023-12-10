@@ -1,5 +1,9 @@
 package swing;
 
+import javax.swing.JPasswordField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.FontMetrics;
@@ -7,28 +11,24 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.RenderingHints;
-import javax.swing.JPasswordField;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
 public class PasswordField extends JPasswordField {
 
-    public String getHint() {
-        return hint;
-    }
-
-    public void setHint(String hint) {
-        this.hint = hint;
-        repaint();
-    }
-
     private String hint = "";
     private final Animator animator;
     private float animate;
     private boolean show = true;
+    
+    public String getHint() {
+    return hint;
+}
+
+public void setHint(String hint) {
+    this.hint = hint;
+    repaint();
+}
 
     public PasswordField() {
         setOpaque(false);
@@ -60,36 +60,36 @@ public class PasswordField extends JPasswordField {
         getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                if (getPassword().length != 0) {
-                    if (show) {
-                        if (animator.isRunning() == false) {
-                            stop();
-                            animator.start();
-                        }
-                    } else if (animator.isRunning()) {
-                        stop();
-                        animator.start();
-                    }
-                }
+                handleDocumentUpdate();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 if (getText().equals("")) {
-                    stop();
+                    stopAnimation();
                     animator.start();
                 }
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-
             }
         });
-
     }
 
-    private void stop() {
+    private void handleDocumentUpdate() {
+        if (getPassword().length != 0) {
+            if (show && !animator.isRunning()) {
+                stopAnimation();
+                animator.start();
+            } else if (!show && animator.isRunning()) {
+                stopAnimation();
+                animator.start();
+            }
+        }
+    }
+
+    private void stopAnimation() {
         if (animator.isRunning()) {
             float f = animator.getTimingFraction();
             animator.stop();

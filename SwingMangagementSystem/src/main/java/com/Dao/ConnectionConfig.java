@@ -7,10 +7,10 @@ package com.Dao;
 // ConnectionConfig.java
 public class ConnectionConfig {
   
-    public static final String DRIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver"; // Updated driver class for MySQL Connector/J 8.0 and later
+    public static final String DRIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
     public static final String CONNECTION_URL = "jdbc:mysql://localhost:3306/studentmanagementinformation?user=root";
     public static final String DATABASE_NAME = "lab2";
     public static final String DB_USER = "root";
-    public static final String DB_PASSWORD = ""; // If the password is empty, update as needed
+    public static final String DB_PASSWORD = "";
 
 }

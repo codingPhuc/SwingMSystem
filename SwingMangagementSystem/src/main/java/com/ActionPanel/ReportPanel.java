@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.JFileChooser;
@@ -340,7 +341,7 @@ for (ModelCertificate cef : certificateDao.getAllCertificates())
                 excelFOU = new FileOutputStream(excelFileChooser.getSelectedFile() + ".xlsx");
                 excelBOU = new BufferedOutputStream(excelFOU);
                 excelJTableExporter.write(excelBOU);
-                JOptionPane.showMessageDialog(null, "Exported Successfully !!!........");
+                JOptionPane.showMessageDialog(null, "Exported Successfully");
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
             } catch (IOException ex) {
@@ -434,28 +435,68 @@ for (ModelCertificate cef : certificateDao.getAllCertificates())
     }
       
                 }
-                for (int row = 1; row < excelSheet.getLastRowNum(); row++) {
+                for (int row = 1; row <=excelSheet.getLastRowNum(); row++) {
                     excelRow = excelSheet.getRow(row);
 
 XSSFCell excelName = excelRow.getCell(nameIndex);
 String name = excelName.getStringCellValue();
 
-    int startYear = Integer.parseInt(excelRow.getCell(startYearIndex).getStringCellValue());
-    int endYear = Integer.parseInt(excelRow.getCell(startYearIndex).getStringCellValue());
+
 XSSFCell excelMajor = excelRow.getCell(majorIndex);
 String major = excelMajor.getStringCellValue();
 
 XSSFCell excelEQ = excelRow.getCell(eqIndex);
 String eq = excelEQ.getStringCellValue();
 
-XSSFCell excelPhone = excelRow.getCell(phoneIndex);
-String phone = excelPhone.getStringCellValue();
+                    int startYear=0;
+                    int endYear=0;
+                    String phone = "";
+
+
+                    XSSFCell startYearCell = excelRow.getCell(startYearIndex);
+                    if (startYearCell != null) {
+                        if (startYearCell.getCellType() == CellType.STRING) {
+                            startYear = Integer.parseInt(startYearCell.getStringCellValue());
+                        } else {
+
+                            startYear = (int) startYearCell.getNumericCellValue();
+                        }
+                    } else {
+
+                    }
+
+
+                    XSSFCell endYearCell = excelRow.getCell(endYearIndex);
+                    if (endYearCell != null) {
+                        if (endYearCell.getCellType() == CellType.STRING) {
+                            endYear = Integer.parseInt(endYearCell.getStringCellValue());
+                        } else {
+                            // Assume it's a numeric value
+                            endYear = (int) endYearCell.getNumericCellValue();
+                        }
+                    } else {
+
+                    }
+
+
+                    XSSFCell excelPhone = excelRow.getCell(phoneIndex);
+                    if (excelPhone != null) {
+                        if (excelPhone.getCellType() == CellType.STRING) {
+                            phone = excelPhone.getStringCellValue();
+                        } else {
+
+                            double numericValue = excelPhone.getNumericCellValue();
+                            phone = String.valueOf((int) numericValue);
+                        }
+                    } else {
+
+                    }
                    
                     studentDao.addStudent(name, startYear, endYear, major, eq, phone);
 
                     
                 }
-                JOptionPane.showMessageDialog(null, "Imported Successfully !!.....");
+                JOptionPane.showMessageDialog(null, "Imported Successfully");
             } catch (IOException iOException) {
                 JOptionPane.showMessageDialog(null, iOException.getMessage());
             } finally {
@@ -614,27 +655,27 @@ String phone = excelPhone.getStringCellValue();
                 String name = excelName.getStringCellValue();
 
                 XSSFCell excelIssueDate = excelRow.getCell(issueDateIndex);
-                String issueDate = excelIssueDate.getStringCellValue();
+                String issueDate = parseDateCellValue(excelIssueDate);
 
                 XSSFCell excelExpiryDate = excelRow.getCell(expiryDateIndex);
-                String expiryDate = excelExpiryDate.getStringCellValue();
+                String expiryDate = parseDateCellValue(excelExpiryDate);
 
                 XSSFCell excelGrade = excelRow.getCell(gradeIndex);
                  float grade =0 ;
 if (excelGrade != null) {
     if (excelGrade.getCellType() == CellType.STRING) {
-        // If the cell type is STRING, parse the string value to float
+
         try {
              grade = Float.parseFloat(excelGrade.getStringCellValue());
-            // Now you have the grade as a float
+
         } catch (NumberFormatException e) {
-            // Handle the case where the string cannot be parsed to float
+
             e.printStackTrace();
         }
     } else if (excelGrade.getCellType() == CellType.NUMERIC) {
-        // If the cell type is NUMERIC, get the numeric value as float
+
          grade = (float) excelGrade.getNumericCellValue();
-        // Now you have the grade as a float
+
     }
 }
 
@@ -661,8 +702,40 @@ if (excelGrade != null) {
             Reload();
         }
     }
-    }//GEN-LAST:event_IMPORTCEFActionPerformed
-    
+    }
+
+
+    private static String parseDateCellValue(XSSFCell cell) {
+        if (cell == null) {
+            return ""; // Handle the case where the cell is null
+        }
+        SimpleDateFormat dateFormats = new SimpleDateFormat("yyyy-MM-dd") ;
+
+        String dateValue = "";
+
+        if (cell.getCellType() == CellType.STRING) {
+            Date rawDateValue = cell.getDateCellValue();
+            dateValue = dateFormats.format(rawDateValue);
+        } else if (cell.getCellType() == CellType.NUMERIC) {
+            Date rawDateValue = cell.getDateCellValue();
+
+            dateValue = dateFormats.format(rawDateValue);
+
+
+
+            if (dateValue == null) {
+                // Handle the case where none of the formats worked
+                dateValue = ""; // or some default value
+            }
+        } else {
+
+            dateValue = ""; // or some default value
+        }
+
+        return dateValue;
+    }
+
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton EXPORTCEF;

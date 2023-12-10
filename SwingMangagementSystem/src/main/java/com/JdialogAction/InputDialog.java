@@ -402,10 +402,10 @@ phoneDocument.setDocumentFilter(new DocumentFilter() {
         return allUsers.stream().anyMatch(user -> user.getUserName().equals(username));
     }
     private void SubmitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SubmitButtonActionPerformed
-     String username = UsernameTextFlied.getText();
-    String password = PasswordTextFlied.getText();
-    String phone = PhoneTextFlied.getText();
-    String ageText = AgeSpinnerBlock.getValue().toString();
+        String username = UsernameTextFlied.getText().trim();
+        String password = PasswordTextFlied.getText().trim();
+        String phone = PhoneTextFlied.getText().trim();
+        String ageText = AgeSpinnerBlock.getValue().toString().trim();
     int statusIndex = StatusCombobox.getSelectedIndex();
     int userRoleIndex = UserRoleCombobox.getSelectedIndex();
 

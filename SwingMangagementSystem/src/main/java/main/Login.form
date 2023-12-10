@@ -114,7 +114,7 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="swing.TextField" name="txtUser">
+            <Component class="swing.CustomTextField" name="txtUser">
               <Properties>
                 <Property name="hint" type="java.lang.String" value="User Name"/>
               </Properties>
@@ -136,7 +136,7 @@
                 <Property name="text" type="java.lang.String" value="SIGN IN"/>
               </Properties>
             </Component>
-            <Component class="swing.Button" name="cmdLogin">
+            <Component class="swing.CustomButton" name="cmdLogin">
               <Properties>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="e7" green="e7" red="e7" type="rgb"/>
