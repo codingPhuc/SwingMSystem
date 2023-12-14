@@ -12,28 +12,29 @@ import java.sql.ResultSet;
 import java.util.stream.Collectors;
 public class UserDao {
     
-   private static final String INSERT_USER_SQL = "INSERT INTO UserManagement (UserName, Password, ProfilePicture, Age, PhoneNumber, Status, UserRole) VALUES (?, ?, ?, ?, ?, ?, ?)";
+//    private static final String INSERT_USER_SQL = "INSERT INTO UserManagement (UserName, Password, ProfilePicture, Age, PhoneNumber, Status, UserRole) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String DELETE_USER_SQL = "DELETE FROM UserManagement WHERE UserID=?";
     private static final String SELECT_ALL_USERS_SQL = "SELECT * FROM UserManagement";
     private static final String UPDATE_USER_SQL = "UPDATE UserManagement SET UserName=?, Password=?, ProfilePicture=?, Age=?, PhoneNumber=?, Status=?, UserRole=? WHERE UserID=?";
+
     private static final String AUTHENTICATE_USER_SQL = "SELECT * FROM UserManagement WHERE UserName = ? AND Password = ?";
-  public void addUser(String userName, String password, String profilePicture, int age, String phoneNumber, int status, int userRole) {
-        try (Connection connection = ConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_SQL)) {
-            preparedStatement.setString(1, userName);
-            preparedStatement.setString(2, password);
-            preparedStatement.setString(3, profilePicture);
-            preparedStatement.setInt(4, age);
-            preparedStatement.setString(5, phoneNumber);
-            preparedStatement.setInt(6, status);
-            preparedStatement.setInt(7, userRole);
-            preparedStatement.executeUpdate();
+    private static final String INSERT_USER_SQL = "INSERT INTO UserManagement (UserName, Password, ProfilePicture, Age, PhoneNumber, Status, UserRole) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public void addUser(String userName, String password, String profilePicture, int age, String phoneNumber, int status, int userRole) {
+    try (Connection connection = ConnectionFactory.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_SQL)) {
+        preparedStatement.setString(1, userName);
+        preparedStatement.setString(2, password);
+        preparedStatement.setString(3, profilePicture);
+        preparedStatement.setInt(4, age);
+        preparedStatement.setString(5, phoneNumber);
+        preparedStatement.setInt(6, status);
+        preparedStatement.setInt(7, userRole);
+        preparedStatement.executeUpdate();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
-
+    }
     public void deleteUser(int userId) {
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER_SQL)) {

@@ -6,16 +6,29 @@ package com.JdialogAction;
 
 import com.Dao.CertificateDao;
 import com.EventInterface.EventActionCertificate;
-import com.EventInterface.EventActionStudent;
 import com.model.ModelCertificate;
-import com.model.ModelLoginHistory;
 import com.model.ModelStudent;
 import com.model.ModelUser;
-import java.awt.Frame;
-import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.SwingUtilities;
-
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import javax.swing.JOptionPane;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CreationHelper;
 /**
  *
  * @author konod
@@ -130,12 +143,14 @@ public class StudentDetail extends javax.swing.JDialog {
         EQLabel = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         AddCertificate = new javax.swing.JButton();
+        EXPORTCEF = new javax.swing.JToggleButton();
+        IMPORTCEF = new javax.swing.JToggleButton();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         table1 = new com.SwingTable.Table();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1008, 526));
+        setPreferredSize(new java.awt.Dimension(1008, 600));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
 
         jPanel2.setPreferredSize(new java.awt.Dimension(300, 518));
@@ -181,21 +196,46 @@ public class StudentDetail extends javax.swing.JDialog {
             }
         });
 
+        EXPORTCEF.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        EXPORTCEF.setForeground(new java.awt.Color(0, 102, 102));
+        EXPORTCEF.setText("Export Certificate");
+        EXPORTCEF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EXPORTCEFActionPerformed(evt);
+            }
+        });
+
+        IMPORTCEF.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        IMPORTCEF.setForeground(new java.awt.Color(0, 102, 102));
+        IMPORTCEF.setText("Import Certificate");
+        IMPORTCEF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                IMPORTCEFActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(59, 59, 59)
-                .addComponent(AddCertificate, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addGap(49, 49, 49)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(IMPORTCEF)
+                    .addComponent(EXPORTCEF, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(AddCertificate, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(55, 55, 55)
-                .addComponent(AddCertificate, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addGap(23, 23, 23)
+                .addComponent(AddCertificate, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(EXPORTCEF, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(IMPORTCEF, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(70, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -217,7 +257,7 @@ public class StudentDetail extends javax.swing.JDialog {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(UserNameLabel)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(76, Short.MAX_VALUE))
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
@@ -239,8 +279,8 @@ public class StudentDetail extends javax.swing.JDialog {
                 .addComponent(EQLabel)
                 .addGap(18, 18, 18)
                 .addComponent(PhoneLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2);
@@ -274,7 +314,275 @@ public class StudentDetail extends javax.swing.JDialog {
                 Reload();
     }//GEN-LAST:event_AddCertificateActionPerformed
 
-    /**
+    private void EXPORTCEFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EXPORTCEFActionPerformed
+        
+     
+//    List<ModelCertificate> certificates = certificateDao.getCertificatesByStudentID(student.getID());
+
+   FileOutputStream excelFOU = null;
+BufferedOutputStream excelBOU = null;
+XSSFWorkbook excelJTableExporter = null;
+
+// Choose Location For Saving Excel File
+JFileChooser excelFileChooser = new JFileChooser("C:\\Users\\Authentic\\Desktop");
+// Change Dialog Box Title
+excelFileChooser.setDialogTitle("Save As");
+// Only filter files with these extensions "xls", "xlsx", "xlsm"
+FileNameExtensionFilter fnef = new FileNameExtensionFilter("EXCEL FILES", "xls", "xlsx", "xlsm");
+excelFileChooser.setFileFilter(fnef);
+int excelChooser = excelFileChooser.showSaveDialog(null);
+
+// Check if save button is clicked
+if (excelChooser == JFileChooser.APPROVE_OPTION) {
+    try {
+        // Import excel poi libraries to netbeans
+        excelJTableExporter = new XSSFWorkbook();
+        XSSFSheet excelSheet = excelJTableExporter.createSheet("Certificate Table");
+
+        // Loop to get certificate columns and rows
+        XSSFRow excelRow = excelSheet.createRow(0);
+        // Assuming ModelCertificate has some getters to retrieve data
+        excelRow.createCell(0).setCellValue("STUDENT ID");
+        excelRow.createCell(1).setCellValue("NAME");
+        excelRow.createCell(2).setCellValue("ISSUE DATE");
+        excelRow.createCell(3).setCellValue("EXPIRY DATE");
+        excelRow.createCell(4).setCellValue("GRADE");
+
+        List<ModelCertificate> certificates = certificateDao.getCertificatesByStudentID(student.getID());
+        for (int i = 0; i < certificates.size(); i++) {
+            excelRow = excelSheet.createRow(i + 1); // Shift by 1 to skip header
+            ModelCertificate certificate = certificates.get(i);
+
+            // Assuming ModelCertificate has some getters to retrieve data
+            excelRow.createCell(0).setCellValue(certificate.getStudentID());
+            excelRow.createCell(1).setCellValue(certificate.getCertificateName());
+
+            // Set Issue Date and Expiry Date as Excel date format
+            XSSFCell issueDateCell = excelRow.createCell(2);
+            issueDateCell.setCellValue(dateToString(certificate.getIssueDate()));
+
+            XSSFCell expiryDateCell = excelRow.createCell(3);
+            expiryDateCell.setCellValue(dateToString(certificate.getExpiryDate()));
+
+            excelRow.createCell(4).setCellValue(certificate.getGrade());
+        }
+
+        // Append xlsx file extensions to selected files. To create unique file names
+        excelFOU = new FileOutputStream(excelFileChooser.getSelectedFile() + ".xlsx");
+        excelBOU = new BufferedOutputStream(excelFOU);
+        excelJTableExporter.write(excelBOU);
+        JOptionPane.showMessageDialog(null, "Exported Successfully !!!........");
+    } catch (FileNotFoundException ex) {
+        ex.printStackTrace();
+    } catch (IOException ex) {
+        ex.printStackTrace();
+    } finally {
+        try {
+            if (excelBOU != null) {
+                excelBOU.close();
+            }
+            if (excelFOU != null) {
+                excelFOU.close();
+            }
+            if (excelJTableExporter != null) {
+                excelJTableExporter.close();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+}
+
+
+    }//GEN-LAST:event_EXPORTCEFActionPerformed
+private String dateToString(Date date) {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+    return dateFormat.format(date);
+}
+    private void IMPORTCEFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IMPORTCEFActionPerformed
+       
+        int nameIndex = -1;
+        int issueDateIndex = -1;
+        int expiryDateIndex = -1;
+        int gradeIndex = -1;
+
+        File excelFile;
+        FileInputStream excelFIS = null;
+        BufferedInputStream excelBIS = null;
+        XSSFWorkbook excelImportToJTable = null;
+        String defaultCurrentDirectoryPath = "C:\\Users\\Authentic\\Desktop";
+        JFileChooser excelFileChooser = new JFileChooser(defaultCurrentDirectoryPath);
+        excelFileChooser.setDialogTitle("Select Excel File");
+        FileNameExtensionFilter fnef = new FileNameExtensionFilter("EXCEL FILES", "xls", "xlsx", "xlsm");
+        excelFileChooser.setFileFilter(fnef);
+        int excelChooser = excelFileChooser.showOpenDialog(null);
+
+        if (excelChooser == JFileChooser.APPROVE_OPTION) {
+            try {
+                excelFile = excelFileChooser.getSelectedFile();
+                excelFIS = new FileInputStream(excelFile);
+                excelBIS = new BufferedInputStream(excelFIS);
+                excelImportToJTable = new XSSFWorkbook(excelBIS);
+                XSSFSheet excelSheet = excelImportToJTable.getSheetAt(0);
+
+                XSSFRow excelRow = excelSheet.getRow(0);
+
+                if (excelRow != null) {
+                    for (int cell = 0; cell < excelRow.getLastCellNum(); cell++) {
+                        XSSFCell currentCell = excelRow.getCell(cell);
+
+                        // Check if the cell is not null before getting its value
+                        if (currentCell != null) {
+                            String cellValue = currentCell.toString();
+                            switch (cellValue) {
+                               
+                                case "NAME":
+                                nameIndex = cell;
+
+                                break;
+                                case "ISSUE DATE":
+                                issueDateIndex = cell;
+
+                                break;
+                                case "EXPIRY DATE":
+                                expiryDateIndex = cell;
+
+                                break;
+                                case "GRADE":
+                                gradeIndex = cell;
+
+                                break;
+                                // Add more cases as needed for additional columns
+                            }
+                        }
+                    }
+                }
+
+                for (int row = 1; row <= excelSheet.getLastRowNum(); row++) {
+                excelRow = excelSheet.getRow(row);
+
+             
+
+                XSSFCell excelName = excelRow.getCell(nameIndex);
+                String name = excelName.getStringCellValue();
+
+                XSSFCell excelIssueDate = excelRow.getCell(issueDateIndex);
+                String issueDate = parseDateCellValue(excelIssueDate);
+
+                XSSFCell excelExpiryDate = excelRow.getCell(expiryDateIndex);
+                String expiryDate = parseDateCellValue(excelExpiryDate);
+
+                XSSFCell excelGrade = excelRow.getCell(gradeIndex);
+                 float grade =0 ;
+                if (excelGrade != null) {
+                    if (excelGrade.getCellType() == CellType.STRING) {
+
+                        try {
+                             grade = Float.parseFloat(excelGrade.getStringCellValue());
+
+                        } catch (NumberFormatException e) {
+
+                            e.printStackTrace();
+                        }
+                    } else if (excelGrade.getCellType() == CellType.NUMERIC) {
+
+                         grade = (float) excelGrade.getNumericCellValue();
+
+                    }
+}
+
+                certificateDao.addCertificate(student.getID(), name, issueDate, expiryDate, grade);
+            }
+
+                JOptionPane.showMessageDialog(null, "Imported Successfully !!.....");
+            } catch (IOException iOException) {
+                JOptionPane.showMessageDialog(null, iOException.getMessage());
+            } finally {
+                try {
+                    if (excelFIS != null) {
+                        excelFIS.close();
+                    }
+                    if (excelBIS != null) {
+                        excelBIS.close();
+                    }
+                    if (excelImportToJTable != null) {
+                        excelImportToJTable.close();
+                    }
+                } catch (IOException iOException) {
+                    JOptionPane.showMessageDialog(null, iOException.getMessage());
+                }
+                Reload();
+            }
+        }
+    }//GEN-LAST:event_IMPORTCEFActionPerformed
+    
+    
+//    private static String parseDateCellValue(XSSFCell cell) {
+//        if (cell == null) {
+//            return ""; // Handle the case where the cell is null
+//        }
+//        SimpleDateFormat dateFormats = new SimpleDateFormat("yyyy-MM-dd") ;
+//
+//        String dateValue = "";
+//
+//        if (cell.getCellType() == CellType.STRING) {
+//            String rawDateValue = cell.getStringCellValue();
+//            dateValue = dateFormats.format(rawDateValue);
+//        } else if (cell.getCellType() == CellType.NUMERIC) {
+//            Date rawDateValue = cell.getDateCellValue();
+//
+//            dateValue = dateFormats.format(rawDateValue);
+//
+//
+//
+//            if (dateValue == null) {
+//                // Handle the case where none of the formats worked
+//                dateValue = ""; // or some default value
+//            }
+//        } else {
+//
+//            dateValue = ""; // or some default value
+//        }
+//
+//        return dateValue;
+//    }
+    
+    private static String parseDateCellValue(XSSFCell cell) {
+    if (cell == null) {
+        return ""; // Handle the case where the cell is null
+    }
+
+    String dateValue = "";
+
+    if (cell.getCellType() == CellType.STRING) {
+        // Assuming the date value is in MM/dd/yyyy format
+        String rawDateValue = cell.getStringCellValue();
+        
+        try {
+            // Parse the date string and format it as yyyy-MM-dd
+            SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy");
+            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            Date date = inputFormat.parse(rawDateValue);
+            dateValue = outputFormat.format(date);
+        } catch (Exception e) {
+            // Handle parsing exception
+            e.printStackTrace();
+        }
+    } else if (cell.getCellType() == CellType.NUMERIC) {
+        Date rawDateValue = cell.getDateCellValue();
+        if (rawDateValue != null) {
+            // Format the date as yyyy-MM-dd
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            dateValue = dateFormat.format(rawDateValue);
+        }
+    } else {
+        dateValue = ""; // or some default value
+    }
+
+    return dateValue;
+}
+    /** 
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -320,7 +628,9 @@ public class StudentDetail extends javax.swing.JDialog {
     private javax.swing.JButton AddCertificate;
     private javax.swing.JLabel BeginningYearVarible;
     private javax.swing.JLabel EQLabel;
+    private javax.swing.JToggleButton EXPORTCEF;
     private javax.swing.JLabel EndYearLabel;
+    private javax.swing.JToggleButton IMPORTCEF;
     private javax.swing.JLabel MajorLabel;
     private javax.swing.JLabel PhoneLabel;
     private javax.swing.JLabel StudentIdLabel;

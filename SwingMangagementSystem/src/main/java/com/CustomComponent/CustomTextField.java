@@ -46,7 +46,7 @@ public class CustomTextField extends JTextField {
             }
         });
 
-        searchButton.setIcon(new ImageIcon(getClass().getResource("/src/main/com/ResourceImage/TextFiled_searchIcon.png"))); // Add the path to your search icon
+        searchButton.setIcon(new ImageIcon(getClass().getResource("/com/ResourceImage/TextFiled_searchIcon.png"))); // Add the path to your search icon
         searchButton.setOpaque(false);
         searchButton.setContentAreaFilled(false);
         searchButton.setBorderPainted(false);

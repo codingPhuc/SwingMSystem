@@ -4,13 +4,8 @@
  */
 package com.MainComponet;
 
-import com.ActionPanel.HomePanel;
-import com.ActionPanel.ReportPanel;
+import com.ActionPanel.*;
 
-import com.ActionPanel.StudentPanel;
-import com.ActionPanel.UserPanel;
-
-import com.ActionPanel.mainPanel;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
 import com.EventInterface.EventMenuItemSelected;
@@ -82,15 +77,15 @@ public class MainFrame extends javax.swing.JFrame {
                     mainPanel.add(new StudentPanel(LoginUser), BorderLayout.CENTER);
                     break;
                 case 2:
-         
-                    
-                    mainPanel.add(new ReportPanel(LoginUser), BorderLayout.CENTER);
-                    break;
-                case 3:
-                    // Show ReportPanel when menu item 3 is select
-                    
+
                     mainPanel.add(new UserPanel(LoginUser), BorderLayout.CENTER);
                     break;
+//
+//                case 3:
+                    // Show ReportPanel when menu item 3 is select
+
+//                    mainPanel.add(new ReportPanel(LoginUser), BorderLayout.CENTER);
+//                    break;
 
                 // Add more cases for other menu items as needed
                 default:

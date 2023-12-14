@@ -438,15 +438,15 @@ for (ModelCertificate cef : certificateDao.getAllCertificates())
                 for (int row = 1; row <=excelSheet.getLastRowNum(); row++) {
                     excelRow = excelSheet.getRow(row);
 
-XSSFCell excelName = excelRow.getCell(nameIndex);
-String name = excelName.getStringCellValue();
+                    XSSFCell excelName = excelRow.getCell(nameIndex);
+                    String name = excelName.getStringCellValue();
 
 
-XSSFCell excelMajor = excelRow.getCell(majorIndex);
-String major = excelMajor.getStringCellValue();
+                    XSSFCell excelMajor = excelRow.getCell(majorIndex);
+                    String major = excelMajor.getStringCellValue();
 
-XSSFCell excelEQ = excelRow.getCell(eqIndex);
-String eq = excelEQ.getStringCellValue();
+                    XSSFCell excelEQ = excelRow.getCell(eqIndex);
+                    String eq = excelEQ.getStringCellValue();
 
                     int startYear=0;
                     int endYear=0;
@@ -662,21 +662,21 @@ String eq = excelEQ.getStringCellValue();
 
                 XSSFCell excelGrade = excelRow.getCell(gradeIndex);
                  float grade =0 ;
-if (excelGrade != null) {
-    if (excelGrade.getCellType() == CellType.STRING) {
+                if (excelGrade != null) {
+                    if (excelGrade.getCellType() == CellType.STRING) {
 
-        try {
-             grade = Float.parseFloat(excelGrade.getStringCellValue());
+                        try {
+                             grade = Float.parseFloat(excelGrade.getStringCellValue());
 
-        } catch (NumberFormatException e) {
+                        } catch (NumberFormatException e) {
 
-            e.printStackTrace();
-        }
-    } else if (excelGrade.getCellType() == CellType.NUMERIC) {
+                            e.printStackTrace();
+                        }
+                    } else if (excelGrade.getCellType() == CellType.NUMERIC) {
 
-         grade = (float) excelGrade.getNumericCellValue();
+                         grade = (float) excelGrade.getNumericCellValue();
 
-    }
+                    }
 }
 
                 certificateDao.addCertificate(studentId, name, issueDate, expiryDate, grade);

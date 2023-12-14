@@ -17,8 +17,8 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
-import raven.fbr.FancyBorderRadius;
-import shadow.ShadowRenderer;
+
+import fbr.FancyBorderRadius;
 
 /**
  *
@@ -89,7 +89,7 @@ public class Background extends JComponent {
             g2.setColor(new Color(255, 255, 255, 20));
             g2.fill(shape);
             g2.dispose();
-            g.drawImage(new ShadowRenderer(shadow, 0.3f, new Color(0, 0, 0)).createShadow(img), (int) (x - shadow * 0.8f), (int) (y - shadow * 0.8f), null);
+
             g.drawImage(img, x, y, null);
         }
     }

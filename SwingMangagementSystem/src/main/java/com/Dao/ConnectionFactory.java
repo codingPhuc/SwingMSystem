@@ -8,10 +8,6 @@ import java.sql.SQLException;
 public class ConnectionFactory {
     private static ConnectionFactory connectionFactory = null;
 
-//    static Object getInstance() {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-//    }
-
     private ConnectionFactory() {
         try {
             Class.forName(ConnectionConfig.DRIVER_CLASS_NAME);
@@ -19,14 +15,12 @@ public class ConnectionFactory {
             e.printStackTrace();
         }
     }
-
     public static Connection getConnection() throws SQLException {
         Connection conn = null;
         String connectionUrl = ConnectionConfig.CONNECTION_URL + ConnectionConfig.DATABASE_NAME;
         conn = DriverManager.getConnection(connectionUrl, ConnectionConfig.DB_USER, ConnectionConfig.DB_PASSWORD);
         return conn;
     }
-
     public  ConnectionFactory getInstance() {
         if (connectionFactory == null) {
             connectionFactory = new ConnectionFactory();

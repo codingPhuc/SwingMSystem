@@ -84,10 +84,10 @@ protected void paintChildren(Graphics grphcs) {
         addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarHome.png")), "Home"));
 //        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/"main/javaResourceImage/SideBarUser.png")), "User"));
         addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarStudent.png")), "Student"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarReport.png")), "Report"));
+//        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarReport.png")), "Report"));
         if (this.adminRole) {
         addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/com/ResourceImage/SideBarUser.png")), "User"));
-    }
+            }
     }
  private void addMenu(ModelMenu menu) {
        
