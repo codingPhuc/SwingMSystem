@@ -159,9 +159,11 @@ phoneDocument.setDocumentFilter(new DocumentFilter() {
       
 
         // Specify the file name for the saved image
-        String ext = "jpg";
+        String ext = "jpg"; // Default to JPEG
         if ("png".equals(fileExtension)) {
             ext = "png";
+        } else if ("jfif".equals(fileExtension)) {
+            ext = "jpg";
         }
 
         destinationFileName = String.format("%s.%s", RandomStringUtils.randomAlphanumeric(8), ext);

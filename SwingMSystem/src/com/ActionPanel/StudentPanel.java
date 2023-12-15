@@ -12,9 +12,31 @@ import com.model.ModelStudent;
 import com.model.ModelUser;
 import com.model.StudentComparator;
 import java.awt.Frame;
+import java.awt.event.KeyEvent;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.poi.ss.usermodel.CellType;
+
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import java.io.FileWriter;
+
 
 /**
  *
@@ -23,6 +45,7 @@ import javax.swing.SwingUtilities;
 public class StudentPanel extends javax.swing.JPanel {
     private final StudentDao studentDao;
     private ModelUser loginUser ; 
+    private String searchText  ;  
     /**
      * Creates new form StudentPanel
      */
@@ -41,16 +64,38 @@ public class StudentPanel extends javax.swing.JPanel {
          }
             
     }
-    
-   
-     
+     private boolean containsSearchText(ModelStudent student) {
+        // Check if any property of the student contains the search text
+        String lowerSearchText = searchText.toLowerCase();
 
-
-    
-     private void Reload() {
-        table1.ClearTable();
-        initTableData();
+        return student.getID().toLowerCase().contains(lowerSearchText) ||
+                student.getName().toLowerCase().contains(lowerSearchText) ||
+                String.valueOf(student.getBeginningYear()).contains(lowerSearchText) ||
+                String.valueOf(student.getEndYear()).contains(lowerSearchText) ||
+                student.getMajor().toLowerCase().contains(lowerSearchText) ||
+                student.getEducationQuality().toLowerCase().contains(lowerSearchText) ||
+                student.getPhone().contains(lowerSearchText);
     }
+    // each combox action need to include the get the text then set the search text 
+    // when the key is press on the custom search bar the search text will auto matically activate 
+    // when it hit the enter or search button then the text in side the custom text field will be empty 
+    public List<ModelStudent> searchString()
+    {
+        if (searchText == null || searchText.isEmpty()) {
+            return studentDao.getAllStudents();
+        }
+
+        List<ModelStudent> searchList = new ArrayList<ModelStudent>();
+
+        for (ModelStudent student : studentDao.getAllStudents()) {
+            if (containsSearchText(student)) {
+                searchList.add(student);
+            }
+        }
+
+        return searchList;
+    }
+   
 
     private void initTableData() {
         EventActionStudent eventAction = new EventActionStudent() {
@@ -90,6 +135,7 @@ public class StudentPanel extends javax.swing.JPanel {
                 Reload();
             }
         };
+     
 
     String selectedMajor = MAJORCOMBOBOX.getSelectedItem().toString();
     String selectedQuality = QUALITYCOMBOBOX.getSelectedItem().toString();
@@ -97,9 +143,8 @@ public class StudentPanel extends javax.swing.JPanel {
     Comparator<ModelStudent> comparator = new StudentComparator(selectedSortingCriteria);
 
     // Clear the existing rows in the table
-    table1.ClearTable();
     int CountStudent =0 ; 
-    List<ModelStudent> students =  studentDao.getAllStudents() ;
+    List<ModelStudent> students =  searchString();
     students.sort(comparator);
     // Loop through students and filter based on the selected values
     for (ModelStudent student : students) {
@@ -115,7 +160,12 @@ public class StudentPanel extends javax.swing.JPanel {
             CountStudent++ ; 
         }
     }
-    jLabel4.setText("Student Number : "+CountStudent);
+        jLabel4.setText("Student Number : "+CountStudent);
+    }
+      
+     private void Reload() {
+        table1.ClearTable();
+        initTableData();
     }
 
     /**
@@ -136,6 +186,7 @@ public class StudentPanel extends javax.swing.JPanel {
         STUDENTSORTCOMBOBOX = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        customTextField1 = new com.CustomComponent.CustomTextField();
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         lightBule2 = new PaintComponent.LightBule();
@@ -144,6 +195,8 @@ public class StudentPanel extends javax.swing.JPanel {
         blueGradianPain1 = new PaintComponent.BlueGradianPain();
         ActionLabel = new javax.swing.JLabel();
         UserAddingButton = new javax.swing.JButton();
+        EXPORTSTUDENT = new javax.swing.JToggleButton();
+        IMPORTSTUDENT = new javax.swing.JToggleButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         table1 = new com.SwingTable.Table();
@@ -195,32 +248,51 @@ public class StudentPanel extends javax.swing.JPanel {
         jLabel3.setForeground(new java.awt.Color(51, 204, 255));
         jLabel3.setText("Find Student : ");
 
+        customTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                customTextField1ActionPerformed(evt);
+            }
+        });
+        customTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                customTextField1KeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                customTextField1KeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(42, 42, 42)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 159, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(customTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 159, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(56, 56, 56))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(49, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(customTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
         );
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
@@ -278,16 +350,38 @@ public class StudentPanel extends javax.swing.JPanel {
             }
         });
 
+        EXPORTSTUDENT.setBackground(new java.awt.Color(0, 153, 153));
+        EXPORTSTUDENT.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        EXPORTSTUDENT.setForeground(new java.awt.Color(0, 102, 102));
+        EXPORTSTUDENT.setText("EXPORT STUDENT");
+        EXPORTSTUDENT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EXPORTSTUDENTActionPerformed(evt);
+            }
+        });
+
+        IMPORTSTUDENT.setBackground(new java.awt.Color(0, 153, 153));
+        IMPORTSTUDENT.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        IMPORTSTUDENT.setForeground(new java.awt.Color(0, 102, 102));
+        IMPORTSTUDENT.setText("IMPORT STUDENT");
+        IMPORTSTUDENT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                IMPORTSTUDENTActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout blueGradianPain1Layout = new javax.swing.GroupLayout(blueGradianPain1);
         blueGradianPain1.setLayout(blueGradianPain1Layout);
         blueGradianPain1Layout.setHorizontalGroup(
             blueGradianPain1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(blueGradianPain1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(blueGradianPain1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(blueGradianPain1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(ActionLabel)
-                    .addComponent(UserAddingButton, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(106, Short.MAX_VALUE))
+                    .addComponent(UserAddingButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(EXPORTSTUDENT, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(IMPORTSTUDENT, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(76, Short.MAX_VALUE))
         );
         blueGradianPain1Layout.setVerticalGroup(
             blueGradianPain1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -296,7 +390,11 @@ public class StudentPanel extends javax.swing.JPanel {
                 .addComponent(ActionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(UserAddingButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(197, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(EXPORTSTUDENT, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(IMPORTSTUDENT, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(72, Short.MAX_VALUE))
         );
 
         jPanel4.add(blueGradianPain1);
@@ -328,21 +426,19 @@ public class StudentPanel extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 582, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30))))
+                        .addGap(30, 30, 30))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         add(jPanel2, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     private void customTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_customTextField1KeyPressed
-     
+    
         
     }//GEN-LAST:event_customTextField1KeyPressed
     
@@ -366,21 +462,399 @@ public class StudentPanel extends javax.swing.JPanel {
 
     private void QUALITYCOMBOBOXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QUALITYCOMBOBOXActionPerformed
     Reload() ;
-// TODO add your handling code here:
+
     }//GEN-LAST:event_QUALITYCOMBOBOXActionPerformed
 
     private void STUDENTSORTCOMBOBOXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_STUDENTSORTCOMBOBOXActionPerformed
-         Reload() ; // TODO add your handling code here:
+         Reload() ; 
     }//GEN-LAST:event_STUDENTSORTCOMBOBOXActionPerformed
+    
+    
+    
+    private void customTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customTextField1ActionPerformed
+        String text = customTextField1.getText() ; 
+      
+        this.searchText =  text ; 
+        customTextField1.setText("");
+        Reload();
+    }//GEN-LAST:event_customTextField1ActionPerformed
 
+    private void customTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_customTextField1KeyTyped
+      char typedChar = evt.getKeyChar();
+
+    if (typedChar == KeyEvent.VK_BACK_SPACE) {
+        // Handle backspace separately
+        handleBackspace();
+    } else if (typedChar != KeyEvent.VK_ENTER) {
+        // Handle other characters
+        handleOtherCharacters(typedChar);
+    }
+    
+    }//GEN-LAST:event_customTextField1KeyTyped
+
+    private void EXPORTSTUDENTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EXPORTSTUDENTActionPerformed
+
+        List<ModelStudent> studentList =  studentDao.getAllStudents();
+       
+      
+       
+
+        // Choose Location For Saving Excel File
+        JFileChooser excelFileChooser = new JFileChooser("C:\\Users\\Authentic\\Desktop");
+        // Change Dialog Box Title
+        excelFileChooser.setDialogTitle("Save As");
+        // Only filter files with these extensions "xls", "xlsx", "xlsm"
+        FileNameExtensionFilter excelf = new FileNameExtensionFilter("EXCEL FILES", "xls", "xlsx", "xlsm");
+        FileNameExtensionFilter csvFilter = new FileNameExtensionFilter("CSV FILES", "csv");
+        excelFileChooser.setFileFilter(excelf);
+        excelFileChooser.setFileFilter(csvFilter);
+
+        int excelChooser = excelFileChooser.showSaveDialog(null);
+
+        // Check if save button is clicked
+        if (excelChooser == JFileChooser.APPROVE_OPTION) {
+            
+      
+        // Show export options dialog
+//        Object[] options = {"Export to Excel", "Export to CSV"};
+//        int exportChoice = JOptionPane.showOptionDialog(null, "Choose export format:", "Export Options",
+//                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+         FileNameExtensionFilter selectedFilter = (FileNameExtensionFilter) excelFileChooser.getFileFilter();
+        // Process user's export choice
+        if (selectedFilter.equals(excelf)) {
+            exportToExcelStudent(studentList, excelFileChooser);
+        } else{
+            exportToCSVStudent(studentList, excelFileChooser);
+        }
+         
+        }
+    }//GEN-LAST:event_EXPORTSTUDENTActionPerformed
+    private void exportToExcelStudent(List<ModelStudent> studentList, JFileChooser excelFileChooser) {
+    XSSFWorkbook excelJTableExporter = null;
+    BufferedOutputStream excelBOU = null;
+     FileOutputStream excelFOU = null;
+            excelJTableExporter = new XSSFWorkbook();
+            try {
+     
+                // Import excel poi libraries to netbeans
+               
+                XSSFSheet excelSheet = excelJTableExporter.createSheet("Student Data");
+
+                // Create header row
+                XSSFRow headerRow = excelSheet.createRow(0);
+                headerRow.createCell(0).setCellValue("ID");
+                headerRow.createCell(1).setCellValue("Name");
+                headerRow.createCell(2).setCellValue("Beginning Year");
+                headerRow.createCell(3).setCellValue("End Year");
+                headerRow.createCell(4).setCellValue("Major");
+                headerRow.createCell(5).setCellValue("Education Quality");
+                headerRow.createCell(6).setCellValue("Phone");
+
+                // Populate data rows
+                for (int i = 0; i < studentList.size(); i++) {
+                    ModelStudent student = studentList.get(i);
+                    XSSFRow dataRow = excelSheet.createRow(i + 1);
+
+                    dataRow.createCell(0).setCellValue(student.getID());
+                    dataRow.createCell(1).setCellValue(student.getName());
+                    dataRow.createCell(2).setCellValue(student.getBeginningYear());
+                    dataRow.createCell(3).setCellValue(student.getEndYear());
+                    dataRow.createCell(4).setCellValue(student.getMajor());
+                    dataRow.createCell(5).setCellValue(student.getEducationQuality());
+                    dataRow.createCell(6).setCellValue(student.getPhone());
+                }
+
+                // Append xlsx file extensions to selected files. To create unique file names
+                excelFOU = new FileOutputStream(excelFileChooser.getSelectedFile() + ".xlsx");
+                excelBOU = new BufferedOutputStream(excelFOU);
+                excelJTableExporter.write(excelBOU);
+                JOptionPane.showMessageDialog(null, "Exported Successfully !!!........");
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } finally {
+                try {
+                    if (excelBOU != null) {
+                        excelBOU.close();
+                    }
+                    if (excelFOU != null) {
+                        excelFOU.close();
+                    }
+                    if (excelJTableExporter != null) {
+                        excelJTableExporter.close();
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+}
+private void exportToCSVStudent(List<ModelStudent> studentList, JFileChooser excelFileChooser) {
+        // Create CSV file
+   try (FileWriter csvWriter = new FileWriter(excelFileChooser.getSelectedFile() + ".csv")) {
+            // Write CSV header
+            csvWriter.append("ID,Name,Beginning Year,End Year,Major,Education Quality,Phone");
+            csvWriter.append("\n");
+
+            // Write CSV data
+            for (ModelStudent student : studentList) {
+                csvWriter.append(String.join(",", 
+                        String.valueOf(student.getID()),
+                        student.getName(),
+                        String.valueOf(student.getBeginningYear()),
+                        String.valueOf(student.getEndYear()),
+                        student.getMajor(),
+                        student.getEducationQuality(),
+                        student.getPhone()));
+                csvWriter.append("\n");
+            }
+
+            JOptionPane.showMessageDialog(null, "Exported to CSV Successfully !!!........");
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+    
+    
+    
+    
+    private void IMPORTSTUDENTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IMPORTSTUDENTActionPerformed
+
+        File excelFile;
+
+String defaultCurrentDirectoryPath = "C:\\Users\\Authentic\\Desktop";
+JFileChooser excelFileChooser = new JFileChooser(defaultCurrentDirectoryPath);
+excelFileChooser.setDialogTitle("Select File");
+FileNameExtensionFilter fnef = new FileNameExtensionFilter("EXCEL FILES", "xls", "xlsx", "xlsm");
+FileNameExtensionFilter csvFilter = new FileNameExtensionFilter("CSV FILES", "csv");
+excelFileChooser.setFileFilter(fnef);
+excelFileChooser.setFileFilter(csvFilter);
+
+int excelChooser = excelFileChooser.showOpenDialog(null);
+
+if (excelChooser == JFileChooser.APPROVE_OPTION) {
+    File selectedFile = excelFileChooser.getSelectedFile();
+    FileNameExtensionFilter selectedFilter = (FileNameExtensionFilter) excelFileChooser.getFileFilter();
+
+    if (selectedFilter.equals(fnef)) {
+        // User selected the EXCEL FILES filter, import from Excel
+        importStudentsFromExcel(selectedFile);
+    } else if (selectedFilter.equals(csvFilter)) {
+        importStudentsFromCSV(selectedFile);
+        // User selected the CSV FILES filter, export to CSV
+      
+    }
+}
+
+    }//GEN-LAST:event_IMPORTSTUDENTActionPerformed
+
+// Assume studentDao is an instance of your data access object
+
+public void importStudentsFromCSV(File csvFile) {
+    try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        String line;
+        String[] headers = null;
+
+        while ((line = br.readLine()) != null) {
+            String[] values = line.split(",");
+
+            if (headers == null) {
+                // First line is the header
+                headers = values;
+                continue;
+            }
+
+            // Find the index of each column based on the header
+         
+            int nameIndex = findIndex(headers, "Name");
+            int beginningYearIndex = findIndex(headers, "Beginning Year");
+            int endYearIndex = findIndex(headers, "End Year");
+            int majorIndex = findIndex(headers, "Major");
+            int educationQualityIndex = findIndex(headers, "Education Quality");
+            int phoneIndex = findIndex(headers, "Phone");
+
+            // Use the found indices to get the values
+           
+            String name = values[nameIndex];
+            int beginningYear = Integer.parseInt(values[beginningYearIndex]);
+            int endYear = Integer.parseInt(values[endYearIndex]);
+            String major = values[majorIndex];
+            String educationQuality = values[educationQualityIndex];
+            String phone = values[phoneIndex];
+
+            // Assuming you have a method in studentDao to add a student
+            studentDao.addStudent(name, beginningYear, endYear, major, educationQuality, phone);
+        }
+
+        JOptionPane.showMessageDialog(null, "Import from CSV Successfully !!!........");
+        Reload();
+    } catch (IOException | NumberFormatException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error importing from CSV: " + e.getMessage());
+    }
+}
+
+// Helper method to find the index of a column in the header
+private int findIndex(String[] headers, String columnName) {
+    for (int i = 0; i < headers.length; i++) {
+        if (headers[i].equalsIgnoreCase(columnName)) {
+            return i;
+        }
+    }
+    return -1; // Not found
+}
+
+    public void importStudentsFromExcel(File excelFile) {
+    int nameIndex = -1;
+    int startYearIndex = -1;
+    int endYearIndex = -1;
+    int majorIndex = -1;
+    int eqIndex = -1;
+    int phoneIndex = -1;
+    FileInputStream excelFIS = null;
+    BufferedInputStream excelBIS = null;
+    XSSFWorkbook excelImportToJTable = null;
+
+    try {
+        excelFIS = new FileInputStream(excelFile);
+        excelBIS = new BufferedInputStream(excelFIS);
+        excelImportToJTable = new XSSFWorkbook(excelBIS);
+        XSSFSheet excelSheet = excelImportToJTable.getSheetAt(0);
+
+        XSSFRow excelRow = excelSheet.getRow(0);
+        if (excelRow != null) {
+            for (int cell = 0; cell < excelRow.getLastCellNum(); cell++) {
+                XSSFCell currentCell = excelRow.getCell(cell);
+
+                // Check if the cell is not null before getting its value
+                if (currentCell != null) {
+                    String cellValue = currentCell.toString();
+                    switch (cellValue.toUpperCase()) {
+                        case "NAME":
+                            nameIndex = cell;
+                            
+                            break;
+                        case "BEGINNING YEAR":
+                            startYearIndex = cell;
+                            
+                            break;
+                        case "END YEAR":
+                            endYearIndex = cell;
+                            
+                            break;
+                        case "MAJOR":
+                            majorIndex = cell;
+                            System.out.println("Major: " + cell);
+                            break;
+                        case "EDUCATION QUALITY":
+                            eqIndex = cell;
+                           
+                            break;
+                        case "PHONE":
+                            phoneIndex = cell;
+                            
+                            break;
+                        // Add more cases as needed for additional columns
+                    }
+                }
+            }
+        }
+
+        for (int row = 1; row <= excelSheet.getLastRowNum(); row++) {
+            excelRow = excelSheet.getRow(row);
+
+            XSSFCell excelName = excelRow.getCell(nameIndex);
+            String name = excelName.getStringCellValue();
+
+            XSSFCell excelMajor = excelRow.getCell(majorIndex);
+            String major = excelMajor.getStringCellValue();
+
+            XSSFCell excelEQ = excelRow.getCell(eqIndex);
+            String eq = excelEQ.getStringCellValue();
+
+            int startYear = 0;
+            int endYear = 0;
+            String phone = "";
+
+            XSSFCell startYearCell = excelRow.getCell(startYearIndex);
+            if (startYearCell != null) {
+                if (startYearCell.getCellType() == CellType.STRING) {
+                    startYear = Integer.parseInt(startYearCell.getStringCellValue());
+                } else {
+                    startYear = (int) startYearCell.getNumericCellValue();
+                }
+            }
+
+            XSSFCell endYearCell = excelRow.getCell(endYearIndex);
+            if (endYearCell != null) {
+                if (endYearCell.getCellType() == CellType.STRING) {
+                    endYear = Integer.parseInt(endYearCell.getStringCellValue());
+                } else {
+                    endYear = (int) endYearCell.getNumericCellValue();
+                }
+            }
+
+            XSSFCell excelPhone = excelRow.getCell(phoneIndex);
+            if (excelPhone != null) {
+                if (excelPhone.getCellType() == CellType.STRING) {
+                    phone = excelPhone.getStringCellValue();
+                } else {
+                    double numericValue = excelPhone.getNumericCellValue();
+                    phone = String.valueOf((int) numericValue);
+                }
+            }
+
+            studentDao.addStudent(name, startYear, endYear, major, eq, phone);
+        }
+
+        JOptionPane.showMessageDialog(null, "Imported Successfully !!.....");
+    } catch (IOException iOException) {
+        JOptionPane.showMessageDialog(null, iOException.getMessage());
+    } finally {
+        try {
+            if (excelFIS != null) {
+                excelFIS.close();
+            }
+            if (excelBIS != null) {
+                excelBIS.close();
+            }
+            if (excelImportToJTable != null) {
+                excelImportToJTable.close();
+            }
+        } catch (IOException iOException) {
+            JOptionPane.showMessageDialog(null, iOException.getMessage());
+        }
+        Reload();
+    }
+}
+
+private void handleBackspace() {
+    String text = customTextField1.getText();
+    if (!text.isEmpty()) {
+        text = text.substring(0, text.length() - 1);
+        this.searchText = text;
+       
+        Reload();
+    }
+}
+
+private void handleOtherCharacters(char typedChar) {
+    String text = customTextField1.getText() + typedChar;
+    this.searchText = text;
+    Reload();
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ActionLabel;
+    private javax.swing.JToggleButton EXPORTSTUDENT;
+    private javax.swing.JToggleButton IMPORTSTUDENT;
     private javax.swing.JComboBox<String> MAJORCOMBOBOX;
     private javax.swing.JComboBox<String> QUALITYCOMBOBOX;
     private javax.swing.JComboBox<String> STUDENTSORTCOMBOBOX;
     private javax.swing.JButton UserAddingButton;
     private PaintComponent.BlueGradianPain blueGradianPain1;
+    private com.CustomComponent.CustomTextField customTextField1;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -396,6 +870,10 @@ public class StudentPanel extends javax.swing.JPanel {
     private PaintComponent.LightBule lightBule2;
     private com.SwingTable.Table table1;
     // End of variables declaration//GEN-END:variables
+
+    private void exportToCSVStudent(File selectedFile) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
     
 }

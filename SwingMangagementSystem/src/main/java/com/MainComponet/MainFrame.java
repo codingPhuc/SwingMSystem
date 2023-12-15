@@ -7,6 +7,8 @@ package com.MainComponet;
 import com.ActionPanel.*;
 
 import java.awt.Color;
+
+import main.Login;
 import net.miginfocom.swing.MigLayout;
 import com.EventInterface.EventMenuItemSelected;
 import com.model.ModelUser;
@@ -16,6 +18,8 @@ import java.awt.event.ActionListener;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
+
+import javax.swing.*;
 
 /**
  *
@@ -80,12 +84,6 @@ public class MainFrame extends javax.swing.JFrame {
 
                     mainPanel.add(new UserPanel(LoginUser), BorderLayout.CENTER);
                     break;
-//
-//                case 3:
-                    // Show ReportPanel when menu item 3 is select
-
-//                    mainPanel.add(new ReportPanel(LoginUser), BorderLayout.CENTER);
-//                    break;
 
                 // Add more cases for other menu items as needed
                 default:
@@ -154,6 +152,30 @@ public class MainFrame extends javax.swing.JFrame {
             
             }
         });
+
+     header.addLogoutEvent(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent ae) {
+             // Show a confirmation dialog
+             int choice = JOptionPane.showConfirmDialog(null, "Do you want to log out?", "Logout Confirmation", JOptionPane.YES_NO_OPTION);
+
+             // Check the user's choice
+             if (choice == JOptionPane.YES_OPTION) {
+                 // If yes, show the login frame
+                 java.awt.EventQueue.invokeLater(new Runnable() {
+                     public void run() {
+                         new Login().setVisible(true);
+                     }
+                 });
+
+                 // Additional code for logout, if needed
+
+                 // Close the current frame (assuming it's the MainFrame)
+                 dispose();
+             }
+             // If no, do nothing
+         }
+     });
         // set the side bar text and the header text of the application 
       
 

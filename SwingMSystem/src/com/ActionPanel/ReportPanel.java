@@ -193,10 +193,10 @@ for (ModelCertificate cef : certificateDao.getAllCertificates())
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jLabel1)
-                .addGap(75, 365, Short.MAX_VALUE))
+                .addGap(75, 357, Short.MAX_VALUE))
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(EXPORTSTUDENT)
@@ -214,7 +214,7 @@ for (ModelCertificate cef : certificateDao.getAllCertificates())
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(EXPORTSTUDENT, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(IMPORTSTUDENT, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
 
         add(jPanel5);
@@ -264,7 +264,7 @@ for (ModelCertificate cef : certificateDao.getAllCertificates())
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addComponent(EXPORTCEF)
@@ -282,7 +282,7 @@ for (ModelCertificate cef : certificateDao.getAllCertificates())
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(IMPORTCEF, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(EXPORTCEF, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addContainerGap(54, Short.MAX_VALUE))
         );
 
         add(jPanel2);
@@ -400,27 +400,27 @@ for (ModelCertificate cef : certificateDao.getAllCertificates())
                 switch (cellValue) {
                     case "NAME":
                         nameIndex = cell;
-                        System.out.println("Name: " + cell);
+
                         break;
                     case "START YEAR":
                         startYearIndex = cell;
-                        System.out.println("Start Year: " + cell);
+
                         break;
                     case "END YEAR":
                         endYearIndex = cell;
-                        System.out.println("End Year: " + cell);
+
                         break;
                     case "MAJOR":
                         majorIndex = cell;
-                        System.out.println("Major: " + cell);
+
                         break;
                     case "EQ":
                         eqIndex = cell;
-                        System.out.println("EQ: " + cell);
+
                         break;
                     case "PHONE":
                         phoneIndex = cell;
-                        System.out.println("Phone: " + cell);
+
                         break;
                     // Add more cases as needed for additional columns
                 }
@@ -430,28 +430,68 @@ for (ModelCertificate cef : certificateDao.getAllCertificates())
     }
       
                 }
-                for (int row = 1; row < excelSheet.getLastRowNum(); row++) {
+                for (int row = 1; row <=excelSheet.getLastRowNum(); row++) {
                     excelRow = excelSheet.getRow(row);
+                    
+                    XSSFCell excelName = excelRow.getCell(nameIndex);
+                    String name = excelName.getStringCellValue();
+                    
+                    
+                    XSSFCell excelMajor = excelRow.getCell(majorIndex);
+                    String major = excelMajor.getStringCellValue();
+                    
+                    XSSFCell excelEQ = excelRow.getCell(eqIndex);
+                    String eq = excelEQ.getStringCellValue();
 
-XSSFCell excelName = excelRow.getCell(nameIndex);
-String name = excelName.getStringCellValue();
+                    int startYear=0;
+                    int endYear=0;
+                    String phone = "";
 
-    int startYear = Integer.parseInt(excelRow.getCell(startYearIndex).getStringCellValue());
-    int endYear = Integer.parseInt(excelRow.getCell(startYearIndex).getStringCellValue());
-XSSFCell excelMajor = excelRow.getCell(majorIndex);
-String major = excelMajor.getStringCellValue();
 
-XSSFCell excelEQ = excelRow.getCell(eqIndex);
-String eq = excelEQ.getStringCellValue();
+                    XSSFCell startYearCell = excelRow.getCell(startYearIndex);
+                    if (startYearCell != null) {
+                        if (startYearCell.getCellType() == CellType.STRING) {
+                            startYear = Integer.parseInt(startYearCell.getStringCellValue());
+                        } else {
 
-XSSFCell excelPhone = excelRow.getCell(phoneIndex);
-String phone = excelPhone.getStringCellValue();
+                            startYear = (int) startYearCell.getNumericCellValue();
+                        }
+                    } else {
+
+                    }
+
+
+                    XSSFCell endYearCell = excelRow.getCell(endYearIndex);
+                    if (endYearCell != null) {
+                        if (endYearCell.getCellType() == CellType.STRING) {
+                            endYear = Integer.parseInt(endYearCell.getStringCellValue());
+                        } else {
+                            // Assume it's a numeric value
+                            endYear = (int) endYearCell.getNumericCellValue();
+                        }
+                    } else {
+
+                    }
+
+
+                    XSSFCell excelPhone = excelRow.getCell(phoneIndex);
+                    if (excelPhone != null) {
+                        if (excelPhone.getCellType() == CellType.STRING) {
+                            phone = excelPhone.getStringCellValue();
+                        } else {
+
+                            double numericValue = excelPhone.getNumericCellValue();
+                            phone = String.valueOf((int) numericValue);
+                        }
+                    } else {
+
+                    }
                    
                     studentDao.addStudent(name, startYear, endYear, major, eq, phone);
 
                     
                 }
-                JOptionPane.showMessageDialog(null, "Imported Successfully !!.....");
+                JOptionPane.showMessageDialog(null, "Imported Successfully");
             } catch (IOException iOException) {
                 JOptionPane.showMessageDialog(null, iOException.getMessage());
             } finally {

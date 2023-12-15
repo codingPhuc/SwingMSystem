@@ -13,13 +13,7 @@ import com.model.ModelUser;
 import com.model.StudentComparator;
 import java.awt.Frame;
 import java.awt.event.KeyEvent;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -58,6 +52,8 @@ public class StudentPanel extends javax.swing.JPanel {
              table1.setTableVisible(false);
              ActionLabel.setVisible(false);
              UserAddingButton.setVisible(false);
+             EXPORTSTUDENT.setVisible(false);
+             IMPORTSTUDENT.setVisible(false);
          }
             
     }
@@ -492,227 +488,337 @@ public class StudentPanel extends javax.swing.JPanel {
     private void EXPORTSTUDENTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EXPORTSTUDENTActionPerformed
 
         List<ModelStudent> studentList =  studentDao.getAllStudents();
-        FileOutputStream excelFOU = null;
-        BufferedOutputStream excelBOU = null;
-        XSSFWorkbook excelJTableExporter = null;
+
+
+
 
         // Choose Location For Saving Excel File
         JFileChooser excelFileChooser = new JFileChooser("C:\\Users\\Authentic\\Desktop");
         // Change Dialog Box Title
         excelFileChooser.setDialogTitle("Save As");
         // Only filter files with these extensions "xls", "xlsx", "xlsm"
-        FileNameExtensionFilter fnef = new FileNameExtensionFilter("EXCEL FILES", "xls", "xlsx", "xlsm");
-        excelFileChooser.setFileFilter(fnef);
+        FileNameExtensionFilter excelf = new FileNameExtensionFilter("EXCEL FILES", "xls", "xlsx", "xlsm");
+        FileNameExtensionFilter csvFilter = new FileNameExtensionFilter("CSV FILES", "csv");
+        excelFileChooser.setFileFilter(excelf);
+        excelFileChooser.setFileFilter(csvFilter);
+
         int excelChooser = excelFileChooser.showSaveDialog(null);
 
         // Check if save button is clicked
         if (excelChooser == JFileChooser.APPROVE_OPTION) {
 
-            try {
-                // Import excel poi libraries to netbeans
-                excelJTableExporter = new XSSFWorkbook();
-                XSSFSheet excelSheet = excelJTableExporter.createSheet("Student Data");
 
-                // Create header row
-                XSSFRow headerRow = excelSheet.createRow(0);
-                headerRow.createCell(0).setCellValue("ID");
-                headerRow.createCell(1).setCellValue("Name");
-                headerRow.createCell(2).setCellValue("Beginning Year");
-                headerRow.createCell(3).setCellValue("End Year");
-                headerRow.createCell(4).setCellValue("Major");
-                headerRow.createCell(5).setCellValue("Education Quality");
-                headerRow.createCell(6).setCellValue("Phone");
-
-                // Populate data rows
-                for (int i = 0; i < studentList.size(); i++) {
-                    ModelStudent student = studentList.get(i);
-                    XSSFRow dataRow = excelSheet.createRow(i + 1);
-
-                    dataRow.createCell(0).setCellValue(student.getID());
-                    dataRow.createCell(1).setCellValue(student.getName());
-                    dataRow.createCell(2).setCellValue(student.getBeginningYear());
-                    dataRow.createCell(3).setCellValue(student.getEndYear());
-                    dataRow.createCell(4).setCellValue(student.getMajor());
-                    dataRow.createCell(5).setCellValue(student.getEducationQuality());
-                    dataRow.createCell(6).setCellValue(student.getPhone());
-                }
-
-                // Append xlsx file extensions to selected files. To create unique file names
-                excelFOU = new FileOutputStream(excelFileChooser.getSelectedFile() + ".xlsx");
-                excelBOU = new BufferedOutputStream(excelFOU);
-                excelJTableExporter.write(excelBOU);
-                JOptionPane.showMessageDialog(null, "Exported Successfully !!!........");
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } finally {
-                try {
-                    if (excelBOU != null) {
-                        excelBOU.close();
-                    }
-                    if (excelFOU != null) {
-                        excelFOU.close();
-                    }
-                    if (excelJTableExporter != null) {
-                        excelJTableExporter.close();
-                    }
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+            // Show export options dialog
+//        Object[] options = {"Export to Excel", "Export to CSV"};
+//        int exportChoice = JOptionPane.showOptionDialog(null, "Choose export format:", "Export Options",
+//                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+            FileNameExtensionFilter selectedFilter = (FileNameExtensionFilter) excelFileChooser.getFileFilter();
+            // Process user's export choice
+            if (selectedFilter.equals(excelf)) {
+                exportToExcelStudent(studentList, excelFileChooser);
+            } else{
+                exportToCSVStudent(studentList, excelFileChooser);
             }
+
         }
     }//GEN-LAST:event_EXPORTSTUDENTActionPerformed
+    private void exportToExcelStudent(List<ModelStudent> studentList, JFileChooser excelFileChooser) {
+        XSSFWorkbook excelJTableExporter = null;
+        BufferedOutputStream excelBOU = null;
+        FileOutputStream excelFOU = null;
+        excelJTableExporter = new XSSFWorkbook();
+        try {
+
+            // Import excel poi libraries to netbeans
+
+            XSSFSheet excelSheet = excelJTableExporter.createSheet("Student Data");
+
+            // Create header row
+            XSSFRow headerRow = excelSheet.createRow(0);
+            headerRow.createCell(0).setCellValue("ID");
+            headerRow.createCell(1).setCellValue("Name");
+            headerRow.createCell(2).setCellValue("Beginning Year");
+            headerRow.createCell(3).setCellValue("End Year");
+            headerRow.createCell(4).setCellValue("Major");
+            headerRow.createCell(5).setCellValue("Education Quality");
+            headerRow.createCell(6).setCellValue("Phone");
+
+            // Populate data rows
+            for (int i = 0; i < studentList.size(); i++) {
+                ModelStudent student = studentList.get(i);
+                XSSFRow dataRow = excelSheet.createRow(i + 1);
+
+                dataRow.createCell(0).setCellValue(student.getID());
+                dataRow.createCell(1).setCellValue(student.getName());
+                dataRow.createCell(2).setCellValue(student.getBeginningYear());
+                dataRow.createCell(3).setCellValue(student.getEndYear());
+                dataRow.createCell(4).setCellValue(student.getMajor());
+                dataRow.createCell(5).setCellValue(student.getEducationQuality());
+                dataRow.createCell(6).setCellValue(student.getPhone());
+            }
+
+            // Append xlsx file extensions to selected files. To create unique file names
+            excelFOU = new FileOutputStream(excelFileChooser.getSelectedFile() + ".xlsx");
+            excelBOU = new BufferedOutputStream(excelFOU);
+            excelJTableExporter.write(excelBOU);
+            JOptionPane.showMessageDialog(null, "Exported Successfully !!!........");
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (excelBOU != null) {
+                    excelBOU.close();
+                }
+                if (excelFOU != null) {
+                    excelFOU.close();
+                }
+                if (excelJTableExporter != null) {
+                    excelJTableExporter.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    private void exportToCSVStudent(List<ModelStudent> studentList, JFileChooser excelFileChooser) {
+        // Create CSV file
+        try (FileWriter csvWriter = new FileWriter(excelFileChooser.getSelectedFile() + ".csv")) {
+            // Write CSV header
+            csvWriter.append("ID,Name,Beginning Year,End Year,Major,Education Quality,Phone");
+            csvWriter.append("\n");
+
+            // Write CSV data
+            for (ModelStudent student : studentList) {
+                csvWriter.append(String.join(",",
+                        String.valueOf(student.getID()),
+                        student.getName(),
+                        String.valueOf(student.getBeginningYear()),
+                        String.valueOf(student.getEndYear()),
+                        student.getMajor(),
+                        student.getEducationQuality(),
+                        student.getPhone()));
+                csvWriter.append("\n");
+            }
+
+            JOptionPane.showMessageDialog(null, "Exported to CSV Successfully !!!........");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void IMPORTSTUDENTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IMPORTSTUDENTActionPerformed
+
+        File excelFile;
+
+        String defaultCurrentDirectoryPath = "C:\\Users\\Authentic\\Desktop";
+        JFileChooser excelFileChooser = new JFileChooser(defaultCurrentDirectoryPath);
+        excelFileChooser.setDialogTitle("Select File");
+        FileNameExtensionFilter fnef = new FileNameExtensionFilter("EXCEL FILES", "xls", "xlsx", "xlsm");
+        FileNameExtensionFilter csvFilter = new FileNameExtensionFilter("CSV FILES", "csv");
+        excelFileChooser.setFileFilter(fnef);
+        excelFileChooser.setFileFilter(csvFilter);
+
+        int excelChooser = excelFileChooser.showOpenDialog(null);
+
+        if (excelChooser == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = excelFileChooser.getSelectedFile();
+            FileNameExtensionFilter selectedFilter = (FileNameExtensionFilter) excelFileChooser.getFileFilter();
+
+            if (selectedFilter.equals(fnef)) {
+                // User selected the EXCEL FILES filter, import from Excel
+                importStudentsFromExcel(selectedFile);
+            } else if (selectedFilter.equals(csvFilter)) {
+                importStudentsFromCSV(selectedFile);
+                // User selected the CSV FILES filter, export to CSV
+
+            }}
+    }//GEN-LAST:event_IMPORTSTUDENTActionPerformed
+
+
+    public void importStudentsFromCSV(File csvFile) {
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String line;
+            String[] headers = null;
+
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+
+                if (headers == null) {
+                    // First line is the header
+                    headers = values;
+                    continue;
+                }
+
+                // Find the index of each column based on the header
+
+                int nameIndex = findIndex(headers, "Name");
+                int beginningYearIndex = findIndex(headers, "Beginning Year");
+                int endYearIndex = findIndex(headers, "End Year");
+                int majorIndex = findIndex(headers, "Major");
+                int educationQualityIndex = findIndex(headers, "Education Quality");
+                int phoneIndex = findIndex(headers, "Phone");
+
+                // Use the found indices to get the values
+
+                String name = values[nameIndex];
+                int beginningYear = Integer.parseInt(values[beginningYearIndex]);
+                int endYear = Integer.parseInt(values[endYearIndex]);
+                String major = values[majorIndex];
+                String educationQuality = values[educationQualityIndex];
+                String phone = values[phoneIndex];
+
+                // Assuming you have a method in studentDao to add a student
+                studentDao.addStudent(name, beginningYear, endYear, major, educationQuality, phone);
+            }
+
+            JOptionPane.showMessageDialog(null, "Import from CSV Successfully !!!........");
+            Reload();
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error importing from CSV: " + e.getMessage());
+        }
+    }
+
+    // Helper method to find the index of a column in the header
+    private int findIndex(String[] headers, String columnName) {
+        for (int i = 0; i < headers.length; i++) {
+            if (headers[i].equalsIgnoreCase(columnName)) {
+                return i;
+            }
+        }
+        return -1; // Not found
+    }
+
+    public void importStudentsFromExcel(File excelFile) {
         int nameIndex = -1;
         int startYearIndex = -1;
         int endYearIndex = -1;
         int majorIndex = -1;
         int eqIndex = -1;
         int phoneIndex = -1;
-
-        File excelFile;
         FileInputStream excelFIS = null;
         BufferedInputStream excelBIS = null;
         XSSFWorkbook excelImportToJTable = null;
-        String defaultCurrentDirectoryPath = "C:\\Users\\Authentic\\Desktop";
-        JFileChooser excelFileChooser = new JFileChooser(defaultCurrentDirectoryPath);
-        excelFileChooser.setDialogTitle("Select Excel File");
-        FileNameExtensionFilter fnef = new FileNameExtensionFilter("EXCEL FILES", "xls", "xlsx", "xlsm");
-        excelFileChooser.setFileFilter(fnef);
-        int excelChooser = excelFileChooser.showOpenDialog(null);
-        if (excelChooser == JFileChooser.APPROVE_OPTION) {
-            try {
 
-                excelFile = excelFileChooser.getSelectedFile();
-                excelFIS = new FileInputStream(excelFile);
-                excelBIS = new BufferedInputStream(excelFIS);
-                excelImportToJTable = new XSSFWorkbook(excelBIS);
-                XSSFSheet excelSheet = excelImportToJTable.getSheetAt(0);
+        try {
+            excelFIS = new FileInputStream(excelFile);
+            excelBIS = new BufferedInputStream(excelFIS);
+            excelImportToJTable = new XSSFWorkbook(excelBIS);
+            XSSFSheet excelSheet = excelImportToJTable.getSheetAt(0);
 
-                XSSFRow excelRow = excelSheet.getRow(0);
-                if (excelRow != null) {
-                    for (int cell = 0; cell < excelRow.getLastCellNum(); cell++) {
-                        XSSFCell currentCell = excelRow.getCell(cell);
+            XSSFRow excelRow = excelSheet.getRow(0);
+            if (excelRow != null) {
+                for (int cell = 0; cell < excelRow.getLastCellNum(); cell++) {
+                    XSSFCell currentCell = excelRow.getCell(cell);
 
-                        // Check if the cell is not null before getting its value
-                        if (currentCell != null) {
-                            String cellValue = currentCell.toString();
-                            switch (cellValue.toUpperCase()) {
-                                case "NAME":
+                    // Check if the cell is not null before getting its value
+                    if (currentCell != null) {
+                        String cellValue = currentCell.toString();
+                        switch (cellValue.toUpperCase()) {
+                            case "NAME":
                                 nameIndex = cell;
 
                                 break;
-                                case "BEGINNING YEAR":
+                            case "BEGINNING YEAR":
                                 startYearIndex = cell;
 
                                 break;
-                                case "END YEAR":
+                            case "END YEAR":
                                 endYearIndex = cell;
 
                                 break;
-                                case "MAJOR":
+                            case "MAJOR":
                                 majorIndex = cell;
-
+                                System.out.println("Major: " + cell);
                                 break;
-                                case "EDUCATION QUALITY":
+                            case "EDUCATION QUALITY":
                                 eqIndex = cell;
 
                                 break;
-                                case "PHONE":
+                            case "PHONE":
                                 phoneIndex = cell;
 
                                 break;
-                                // Add more cases as needed for additional columns
-                            }
-
+                            // Add more cases as needed for additional columns
                         }
                     }
-
                 }
-                for (int row = 1; row < excelSheet.getLastRowNum(); row++) {
-                    excelRow = excelSheet.getRow(row);
+            }
 
-                    XSSFCell excelName = excelRow.getCell(nameIndex);
-                    String name = excelName.getStringCellValue();
+            for (int row = 1; row <= excelSheet.getLastRowNum(); row++) {
+                excelRow = excelSheet.getRow(row);
 
+                XSSFCell excelName = excelRow.getCell(nameIndex);
+                String name = excelName.getStringCellValue();
 
-                    XSSFCell excelMajor = excelRow.getCell(majorIndex);
-                    String major = excelMajor.getStringCellValue();
+                XSSFCell excelMajor = excelRow.getCell(majorIndex);
+                String major = excelMajor.getStringCellValue();
 
-                    XSSFCell excelEQ = excelRow.getCell(eqIndex);
-                    String eq = excelEQ.getStringCellValue();
+                XSSFCell excelEQ = excelRow.getCell(eqIndex);
+                String eq = excelEQ.getStringCellValue();
 
-                    int startYear=0;
-                    int endYear=0;
-                    String phone = "";
+                int startYear = 0;
+                int endYear = 0;
+                String phone = "";
 
-
-                    XSSFCell startYearCell = excelRow.getCell(startYearIndex);
-                    if (startYearCell != null) {
-                        if (startYearCell.getCellType() == CellType.STRING) {
-                            startYear = Integer.parseInt(startYearCell.getStringCellValue());
-                        } else {
-
-                            startYear = (int) startYearCell.getNumericCellValue();
-                        }
+                XSSFCell startYearCell = excelRow.getCell(startYearIndex);
+                if (startYearCell != null) {
+                    if (startYearCell.getCellType() == CellType.STRING) {
+                        startYear = Integer.parseInt(startYearCell.getStringCellValue());
                     } else {
-
+                        startYear = (int) startYearCell.getNumericCellValue();
                     }
-
-
-                    XSSFCell endYearCell = excelRow.getCell(endYearIndex);
-                    if (endYearCell != null) {
-                        if (endYearCell.getCellType() == CellType.STRING) {
-                            endYear = Integer.parseInt(endYearCell.getStringCellValue());
-                        } else {
-                            // Assume it's a numeric value
-                            endYear = (int) endYearCell.getNumericCellValue();
-                        }
-                    } else {
-
-                    }
-
-
-                    XSSFCell excelPhone = excelRow.getCell(phoneIndex);
-                    if (excelPhone != null) {
-                        if (excelPhone.getCellType() == CellType.STRING) {
-                            phone = excelPhone.getStringCellValue();
-                        } else {
-
-                            double numericValue = excelPhone.getNumericCellValue();
-                            phone = String.valueOf((int) numericValue);
-                        }
-                    } else {
-
-                    }
-                   
-                    studentDao.addStudent(name, startYear, endYear, major, eq, phone);
-
                 }
-                JOptionPane.showMessageDialog(null, "Imported Successfully !!.....");
+
+                XSSFCell endYearCell = excelRow.getCell(endYearIndex);
+                if (endYearCell != null) {
+                    if (endYearCell.getCellType() == CellType.STRING) {
+                        endYear = Integer.parseInt(endYearCell.getStringCellValue());
+                    } else {
+                        endYear = (int) endYearCell.getNumericCellValue();
+                    }
+                }
+
+                XSSFCell excelPhone = excelRow.getCell(phoneIndex);
+                if (excelPhone != null) {
+                    if (excelPhone.getCellType() == CellType.STRING) {
+                        phone = excelPhone.getStringCellValue();
+                    } else {
+                        double numericValue = excelPhone.getNumericCellValue();
+                        phone = String.valueOf((int) numericValue);
+                    }
+                }
+
+                studentDao.addStudent(name, startYear, endYear, major, eq, phone);
+            }
+
+            JOptionPane.showMessageDialog(null, "Imported Successfully !!.....");
+        } catch (IOException iOException) {
+            JOptionPane.showMessageDialog(null, iOException.getMessage());
+        } finally {
+            try {
+                if (excelFIS != null) {
+                    excelFIS.close();
+                }
+                if (excelBIS != null) {
+                    excelBIS.close();
+                }
+                if (excelImportToJTable != null) {
+                    excelImportToJTable.close();
+                }
             } catch (IOException iOException) {
                 JOptionPane.showMessageDialog(null, iOException.getMessage());
-            } finally {
-                try {
-                    if (excelFIS != null) {
-                        excelFIS.close();
-                    }
-                    if (excelBIS != null) {
-                        excelBIS.close();
-                    }
-                    if (excelImportToJTable != null) {
-                        excelImportToJTable.close();
-                    }
-                } catch (IOException iOException) {
-                    JOptionPane.showMessageDialog(null, iOException.getMessage());
-                }
-                Reload();
             }
+            Reload();
         }
+    }
 
-    }//GEN-LAST:event_IMPORTSTUDENTActionPerformed
+
+
+
 
 private void handleBackspace() {
     String text = customTextField1.getText();

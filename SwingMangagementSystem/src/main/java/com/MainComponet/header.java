@@ -6,7 +6,6 @@ package com.MainComponet;
 
 import com.Dao.UserDao;
 
-import com.JdialogAction.InputDialog;
 import com.model.ModelUser;
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -68,9 +67,11 @@ public class header extends javax.swing.JPanel {
 
 
             // Specify the file name for the saved image
-            String ext = "jpg";
+            String ext = "jpg"; // Default to JPEG
             if ("png".equals(fileExtension)) {
                 ext = "png";
+            } else if ("jfif".equals(fileExtension)) {
+                ext = "jpg";
             }
 
             destinationFileName = String.format("%s.%s", RandomStringUtils.randomAlphanumeric(8), ext);
@@ -91,6 +92,7 @@ public class header extends javax.swing.JPanel {
         return "";
     }
 
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -103,6 +105,7 @@ public class header extends javax.swing.JPanel {
         imageAvatar1 = new com.CustomizeUIComponent.ImageAvatar();
         MenuButtons = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        logout = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(173, 216, 230));
 
@@ -123,27 +126,35 @@ public class header extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Phuc Nguyen");
 
+        logout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/ResourceImage/LogoutImage.png"))); // NOI18N
+        logout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(MenuButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 409, Short.MAX_VALUE)
+                .addGap(29, 29, 29)
+                .addComponent(logout, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 321, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(imageAvatar1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(imageAvatar1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(MenuButtons, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
+            .addComponent(MenuButtons, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(imageAvatar1, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
+            .addComponent(logout, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(imageAvatar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -180,15 +191,23 @@ public class header extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_imageAvatar1MouseClicked
 
+    private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_logoutActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton MenuButtons;
     private com.CustomizeUIComponent.ImageAvatar imageAvatar1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton logout;
     // End of variables declaration//GEN-END:variables
 
     void addMenuEvent(ActionListener actionListener) {
          MenuButtons.addActionListener(actionListener); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    void addLogoutEvent(ActionListener actionListener)
+    {
+        logout.addActionListener(actionListener);
     }
 
     

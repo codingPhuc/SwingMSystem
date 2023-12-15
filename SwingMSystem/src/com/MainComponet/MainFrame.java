@@ -18,10 +18,11 @@ import com.model.ModelUser;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
-
+import main.Login;
 /**
  *
  * @author konod
@@ -159,6 +160,32 @@ public class MainFrame extends javax.swing.JFrame {
             
             }
         });
+        
+       header.addLogoutEvent(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        // Show a confirmation dialog
+        int choice = JOptionPane.showConfirmDialog(null, "Do you want to log out?", "Logout Confirmation", JOptionPane.YES_NO_OPTION);
+
+        // Check the user's choice
+        if (choice == JOptionPane.YES_OPTION) {
+            // If yes, show the login frame
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    new Login().setVisible(true);
+                }
+            });
+
+            // Additional code for logout, if needed
+
+            // Close the current frame (assuming it's the MainFrame)
+            dispose();
+        }
+        // If no, do nothing
+    }
+});
+
+// Open the MainFrame upon successful logi
         // set the side bar text and the header text of the application 
       
 

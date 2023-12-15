@@ -9,11 +9,8 @@ import com.EventInterface.EventActionCertificate;
 import com.model.ModelCertificate;
 import com.model.ModelStudent;
 import com.model.ModelUser;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+
+import java.io.*;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -21,8 +18,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import javax.swing.JOptionPane;
-import java.io.IOException;
-import java.io.FileNotFoundException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -319,149 +315,201 @@ public class StudentDetail extends javax.swing.JDialog {
      
 //    List<ModelCertificate> certificates = certificateDao.getCertificatesByStudentID(student.getID());
 
-   FileOutputStream excelFOU = null;
-BufferedOutputStream excelBOU = null;
-XSSFWorkbook excelJTableExporter = null;
-
-// Choose Location For Saving Excel File
-JFileChooser excelFileChooser = new JFileChooser("C:\\Users\\Authentic\\Desktop");
-// Change Dialog Box Title
-excelFileChooser.setDialogTitle("Save As");
-// Only filter files with these extensions "xls", "xlsx", "xlsm"
-FileNameExtensionFilter fnef = new FileNameExtensionFilter("EXCEL FILES", "xls", "xlsx", "xlsm");
-excelFileChooser.setFileFilter(fnef);
-int excelChooser = excelFileChooser.showSaveDialog(null);
-
-// Check if save button is clicked
-if (excelChooser == JFileChooser.APPROVE_OPTION) {
-    try {
-        // Import excel poi libraries to netbeans
-        excelJTableExporter = new XSSFWorkbook();
-        XSSFSheet excelSheet = excelJTableExporter.createSheet("Certificate Table");
-
-        // Loop to get certificate columns and rows
-        XSSFRow excelRow = excelSheet.createRow(0);
-        // Assuming ModelCertificate has some getters to retrieve data
-        excelRow.createCell(0).setCellValue("STUDENT ID");
-        excelRow.createCell(1).setCellValue("NAME");
-        excelRow.createCell(2).setCellValue("ISSUE DATE");
-        excelRow.createCell(3).setCellValue("EXPIRY DATE");
-        excelRow.createCell(4).setCellValue("GRADE");
-
         List<ModelCertificate> certificates = certificateDao.getCertificatesByStudentID(student.getID());
-        for (int i = 0; i < certificates.size(); i++) {
-            excelRow = excelSheet.createRow(i + 1); // Shift by 1 to skip header
-            ModelCertificate certificate = certificates.get(i);
+        JFileChooser fileChooser = new JFileChooser("C:\\Users\\Authentic\\Desktop");
+        fileChooser.setDialogTitle("Save As");
+        FileNameExtensionFilter excelFilter = new FileNameExtensionFilter("EXCEL FILES", "xls", "xlsx", "xlsm");
+        FileNameExtensionFilter csvFilter = new FileNameExtensionFilter("CSV FILES", "csv");
+        fileChooser.setFileFilter(excelFilter);
+        fileChooser.setFileFilter(csvFilter);
+        int fileChooserResult = fileChooser.showSaveDialog(null);
 
-            // Assuming ModelCertificate has some getters to retrieve data
-            excelRow.createCell(0).setCellValue(certificate.getStudentID());
-            excelRow.createCell(1).setCellValue(certificate.getCertificateName());
+        if (fileChooserResult == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
 
-            // Set Issue Date and Expiry Date as Excel date format
-            XSSFCell issueDateCell = excelRow.createCell(2);
-            issueDateCell.setCellValue(dateToString(certificate.getIssueDate()));
+            if (fileChooser.getFileFilter().equals(excelFilter)) {
+                exportCertificatesToExcel(certificates,fileChooser);
+            } else if (fileChooser.getFileFilter().equals(csvFilter)) {
+                exportCertificatesToCSV(certificates,fileChooser);
+            }
+}
+    }//GEN-LAST:event_EXPORTCEFActionPerformed
 
-            XSSFCell expiryDateCell = excelRow.createCell(3);
-            expiryDateCell.setCellValue(dateToString(certificate.getExpiryDate()));
 
-            excelRow.createCell(4).setCellValue(certificate.getGrade());
+
+    private void exportCertificatesToCSV(List<ModelCertificate> certificates ,JFileChooser csvFileChooser) {
+
+        try (FileWriter csvWriter = new FileWriter(csvFileChooser.getSelectedFile() + ".csv")) {
+            // Write CSV header
+            csvWriter.append("STUDENT ID,NAME,ISSUE DATE,EXPIRY DATE,GRADE");
+            csvWriter.append("\n");
+
+            // Write CSV data
+            for (ModelCertificate certificate : certificates) {
+                csvWriter.append(String.join(",",
+                        String.valueOf(certificate.getStudentID()),
+                        certificate.getCertificateName(),
+                        dateToString(certificate.getIssueDate()),
+                        dateToString(certificate.getExpiryDate()),
+                        String.valueOf(certificate.getGrade()))); // Convert float to string
+                csvWriter.append("\n");
+            }
+
+            JOptionPane.showMessageDialog(null, "Exported to CSV Successfully !!!........");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        // Append xlsx file extensions to selected files. To create unique file names
-        excelFOU = new FileOutputStream(excelFileChooser.getSelectedFile() + ".xlsx");
-        excelBOU = new BufferedOutputStream(excelFOU);
-        excelJTableExporter.write(excelBOU);
-        JOptionPane.showMessageDialog(null, "Exported Successfully !!!........");
-    } catch (FileNotFoundException ex) {
-        ex.printStackTrace();
-    } catch (IOException ex) {
-        ex.printStackTrace();
-    } finally {
+    }
+
+    private void exportCertificatesToExcel(List<ModelCertificate> certificates, JFileChooser excelFileChooser) {
+        FileOutputStream excelFOU = null;
+        BufferedOutputStream excelBOU = null;
+        XSSFWorkbook excelJTableExporter = null;
+
+        // Choose Location For Saving Excel File
+
+
+        // Check if save button is clicked
+
         try {
-            if (excelBOU != null) {
-                excelBOU.close();
+            // Import excel poi libraries to netbeans
+            excelJTableExporter = new XSSFWorkbook();
+            XSSFSheet excelSheet = excelJTableExporter.createSheet("Certificate Table");
+
+            // Loop to get certificate columns and rows
+            XSSFRow excelRow = excelSheet.createRow(0);
+            // Assuming ModelCertificate has some getters to retrieve data
+            excelRow.createCell(0).setCellValue("STUDENT ID");
+            excelRow.createCell(1).setCellValue("NAME");
+            excelRow.createCell(2).setCellValue("ISSUE DATE");
+            excelRow.createCell(3).setCellValue("EXPIRY DATE");
+            excelRow.createCell(4).setCellValue("GRADE");
+
+            for (int i = 0; i < certificates.size(); i++) {
+                excelRow = excelSheet.createRow(i + 1); // Shift by 1 to skip header
+                ModelCertificate certificate = certificates.get(i);
+
+                // Assuming ModelCertificate has some getters to retrieve data
+                excelRow.createCell(0).setCellValue(certificate.getStudentID());
+                excelRow.createCell(1).setCellValue(certificate.getCertificateName());
+
+                // Set Issue Date and Expiry Date as Excel date format
+                XSSFCell issueDateCell = excelRow.createCell(2);
+                issueDateCell.setCellValue(dateToString(certificate.getIssueDate()));
+
+                XSSFCell expiryDateCell = excelRow.createCell(3);
+                expiryDateCell.setCellValue(dateToString(certificate.getExpiryDate()));
+
+                excelRow.createCell(4).setCellValue(certificate.getGrade());
             }
-            if (excelFOU != null) {
-                excelFOU.close();
-            }
-            if (excelJTableExporter != null) {
-                excelJTableExporter.close();
-            }
+
+            // Append xlsx file extensions to selected files. To create unique file names
+            excelFOU = new FileOutputStream(excelFileChooser.getSelectedFile() + ".xlsx");
+            excelBOU = new BufferedOutputStream(excelFOU);
+            excelJTableExporter.write(excelBOU);
+            JOptionPane.showMessageDialog(null, "Exported Successfully !!!........");
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
+        } finally {
+            try {
+                if (excelBOU != null) {
+                    excelBOU.close();
+                }
+                if (excelFOU != null) {
+                    excelFOU.close();
+                }
+                if (excelJTableExporter != null) {
+                    excelJTableExporter.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
+
     }
-}
 
-
-    }//GEN-LAST:event_EXPORTCEFActionPerformed
-private String dateToString(Date date) {
+    private String dateToString(Date date) {
     SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
     return dateFormat.format(date);
 }
     private void IMPORTCEFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IMPORTCEFActionPerformed
-       
+
+        String defaultCurrentDirectoryPath = "C:\\Users\\Authentic\\Desktop";
+        JFileChooser excelFileChooser = new JFileChooser(defaultCurrentDirectoryPath);
+        excelFileChooser.setDialogTitle("Select File");
+        FileNameExtensionFilter fnef = new FileNameExtensionFilter("EXCEL FILES", "xls", "xlsx", "xlsm");
+        FileNameExtensionFilter csvFilter = new FileNameExtensionFilter("CSV FILES", "csv");
+        excelFileChooser.setFileFilter(fnef);
+        excelFileChooser.setFileFilter(csvFilter);
+
+        int excelChooser = excelFileChooser.showOpenDialog(null);
+
+        if (excelChooser == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = excelFileChooser.getSelectedFile();
+            FileNameExtensionFilter selectedFilter = (FileNameExtensionFilter) excelFileChooser.getFileFilter();
+
+            if (selectedFilter.equals(fnef)) {
+                // User selected the EXCEL FILES filter, import from Excel
+                importCertificatesFromExcelFile(selectedFile);
+            } else if (selectedFilter.equals(csvFilter)) {
+                // User selected the CSV FILES filter, import from CSV
+                importCertificatesFromCSVFile(selectedFile);
+            }
+        }
+    }//GEN-LAST:event_IMPORTCEFActionPerformed
+    private void importCertificatesFromExcelFile(File excelFile) {
         int nameIndex = -1;
         int issueDateIndex = -1;
         int expiryDateIndex = -1;
         int gradeIndex = -1;
 
-        File excelFile;
         FileInputStream excelFIS = null;
         BufferedInputStream excelBIS = null;
         XSSFWorkbook excelImportToJTable = null;
-        String defaultCurrentDirectoryPath = "C:\\Users\\Authentic\\Desktop";
-        JFileChooser excelFileChooser = new JFileChooser(defaultCurrentDirectoryPath);
-        excelFileChooser.setDialogTitle("Select Excel File");
-        FileNameExtensionFilter fnef = new FileNameExtensionFilter("EXCEL FILES", "xls", "xlsx", "xlsm");
-        excelFileChooser.setFileFilter(fnef);
-        int excelChooser = excelFileChooser.showOpenDialog(null);
 
-        if (excelChooser == JFileChooser.APPROVE_OPTION) {
-            try {
-                excelFile = excelFileChooser.getSelectedFile();
-                excelFIS = new FileInputStream(excelFile);
-                excelBIS = new BufferedInputStream(excelFIS);
-                excelImportToJTable = new XSSFWorkbook(excelBIS);
-                XSSFSheet excelSheet = excelImportToJTable.getSheetAt(0);
+        try {
+            excelFIS = new FileInputStream(excelFile);
+            excelBIS = new BufferedInputStream(excelFIS);
+            excelImportToJTable = new XSSFWorkbook(excelBIS);
+            XSSFSheet excelSheet = excelImportToJTable.getSheetAt(0);
 
-                XSSFRow excelRow = excelSheet.getRow(0);
+            XSSFRow excelRow = excelSheet.getRow(0);
 
-                if (excelRow != null) {
-                    for (int cell = 0; cell < excelRow.getLastCellNum(); cell++) {
-                        XSSFCell currentCell = excelRow.getCell(cell);
+            if (excelRow != null) {
+                for (int cell = 0; cell < excelRow.getLastCellNum(); cell++) {
+                    XSSFCell currentCell = excelRow.getCell(cell);
 
-                        // Check if the cell is not null before getting its value
-                        if (currentCell != null) {
-                            String cellValue = currentCell.toString();
-                            switch (cellValue) {
-                               
-                                case "NAME":
+                    // Check if the cell is not null before getting its value
+                    if (currentCell != null) {
+                        String cellValue = currentCell.toString();
+                        switch (cellValue) {
+                            case "NAME":
                                 nameIndex = cell;
-
+                                System.out.println("Name: " + cell);
                                 break;
-                                case "ISSUE DATE":
+                            case "ISSUE DATE":
                                 issueDateIndex = cell;
-
+                                System.out.println("Issue Date: " + cell);
                                 break;
-                                case "EXPIRY DATE":
+                            case "EXPIRY DATE":
                                 expiryDateIndex = cell;
-
+                                System.out.println("Expiry Date: " + cell);
                                 break;
-                                case "GRADE":
+                            case "GRADE":
                                 gradeIndex = cell;
-
+                                System.out.println("Grade: " + cell);
                                 break;
-                                // Add more cases as needed for additional columns
-                            }
+                            // Add more cases as needed for additional columns
                         }
                     }
                 }
+            }
 
-                for (int row = 1; row <= excelSheet.getLastRowNum(); row++) {
+            for (int row = 1; row <= excelSheet.getLastRowNum(); row++) {
                 excelRow = excelSheet.getRow(row);
-
-             
 
                 XSSFCell excelName = excelRow.getCell(nameIndex);
                 String name = excelName.getStringCellValue();
@@ -473,50 +521,105 @@ private String dateToString(Date date) {
                 String expiryDate = parseDateCellValue(excelExpiryDate);
 
                 XSSFCell excelGrade = excelRow.getCell(gradeIndex);
-                 float grade =0 ;
+                float grade = 0;
                 if (excelGrade != null) {
                     if (excelGrade.getCellType() == CellType.STRING) {
-
                         try {
-                             grade = Float.parseFloat(excelGrade.getStringCellValue());
-
+                            grade = Float.parseFloat(excelGrade.getStringCellValue());
                         } catch (NumberFormatException e) {
-
                             e.printStackTrace();
                         }
                     } else if (excelGrade.getCellType() == CellType.NUMERIC) {
-
-                         grade = (float) excelGrade.getNumericCellValue();
-
+                        grade = (float) excelGrade.getNumericCellValue();
                     }
-}
+                }
 
+                // Assuming student is an instance of ModelStudent
                 certificateDao.addCertificate(student.getID(), name, issueDate, expiryDate, grade);
             }
 
-                JOptionPane.showMessageDialog(null, "Imported Successfully !!.....");
+            JOptionPane.showMessageDialog(null, "Imported Successfully !!.....");
+        } catch (IOException iOException) {
+            JOptionPane.showMessageDialog(null, iOException.getMessage());
+        } finally {
+            try {
+                if (excelFIS != null) {
+                    excelFIS.close();
+                }
+                if (excelBIS != null) {
+                    excelBIS.close();
+                }
+                if (excelImportToJTable != null) {
+                    excelImportToJTable.close();
+                }
             } catch (IOException iOException) {
                 JOptionPane.showMessageDialog(null, iOException.getMessage());
-            } finally {
-                try {
-                    if (excelFIS != null) {
-                        excelFIS.close();
-                    }
-                    if (excelBIS != null) {
-                        excelBIS.close();
-                    }
-                    if (excelImportToJTable != null) {
-                        excelImportToJTable.close();
-                    }
-                } catch (IOException iOException) {
-                    JOptionPane.showMessageDialog(null, iOException.getMessage());
+            }
+            Reload();
+        }
+    }
+
+
+    private void importCertificatesFromCSVFile(File csvFile) {
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String line;
+            String[] headers = null;
+
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+
+                if (headers == null) {
+                    // First line is the header
+                    headers = values;
+                    continue;
                 }
-                Reload();
+
+                // Find the index of each column based on the header
+                int nameIndex = findIndex(headers, "NAME");
+                int issueDateIndex = findIndex(headers, "ISSUE DATE");
+                int expiryDateIndex = findIndex(headers, "EXPIRY DATE");
+                int gradeIndex = findIndex(headers, "GRADE");
+
+                // Use the found indices to get the values
+                String name = values[nameIndex];
+                String issueDateStr = values[issueDateIndex];
+                String expiryDateStr = values[expiryDateIndex];
+                float grade = Float.parseFloat(values[gradeIndex]);
+
+                // Parse and convert date strings to MySQL format
+                SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy");
+                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+                Date issueDate = inputFormat.parse(issueDateStr);
+                Date expiryDate = inputFormat.parse(expiryDateStr);
+
+                String formattedIssueDate = outputFormat.format(issueDate);
+                String formattedExpiryDate = outputFormat.format(expiryDate);
+
+                // Assuming student is an instance of ModelStudent
+                certificateDao.addCertificate(student.getID(), name, formattedIssueDate, formattedExpiryDate, grade);
+            }
+
+            JOptionPane.showMessageDialog(null, "Imported Successfully !!.....");
+            Reload();
+        } catch (IOException | NumberFormatException | ParseException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error importing from CSV: " + e.getMessage());
+        }
+    }
+
+
+    // Helper method to find the index of a column in the header
+    private int findIndex(String[] headers, String columnName) {
+        for (int i = 0; i < headers.length; i++) {
+            if (headers[i].equalsIgnoreCase(columnName)) {
+                return i;
             }
         }
-    }//GEN-LAST:event_IMPORTCEFActionPerformed
-    
-    
+        return -1; // Not found
+    }
+
+
 //    private static String parseDateCellValue(XSSFCell cell) {
 //        if (cell == null) {
 //            return ""; // Handle the case where the cell is null

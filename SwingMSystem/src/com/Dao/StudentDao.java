@@ -84,6 +84,7 @@ private static final String UPDATE_STUDENT_SQL = "UPDATE Student SET Name=?, Beg
             preparedStatement.executeUpdate();
             System.out.println("Student added successfully.");
         } catch (SQLException e) {
+            System.out.println(generatedID+"this is the generated ID");
             e.printStackTrace();
         }
     }
@@ -159,4 +160,7 @@ private static final String UPDATE_STUDENT_SQL = "UPDATE Student SET Name=?, Beg
 
         return filteredStudents;
     }
+    
+    // find the student bases on the search String  
+  
 }

@@ -121,7 +121,7 @@ public class Table extends JTable {
     public void addRow(Object[] row) {
         
         DefaultTableModel mod = (DefaultTableModel) getModel();
-        System.out.print(mod);
+    
         mod.addRow(row);
     }
     public void removeLastColumn() {
