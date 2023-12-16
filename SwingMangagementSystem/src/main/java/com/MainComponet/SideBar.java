@@ -16,10 +16,7 @@ import javax.swing.ImageIcon;
 import net.miginfocom.swing.MigLayout;
 import com.EventInterface.EventMenuItemSelected;
 import javax.swing.border.EmptyBorder;
-/**
- *
- * @author konod
- */
+
 public class SideBar extends javax.swing.JPanel {
 
    

@@ -13,10 +13,7 @@ import java.awt.Frame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-/**
- *
- * @author konod
- */
+
 public class UserPanel extends javax.swing.JPanel {
    
   

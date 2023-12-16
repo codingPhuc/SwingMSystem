@@ -10,10 +10,7 @@ import java.text.SimpleDateFormat;
 import javax.swing.JDialog;
 import javax.swing.SwingConstants;
 
-/**
- *
- * @author konod
- */
+
 public class CertificateView extends javax.swing.JDialog {
 
     /**

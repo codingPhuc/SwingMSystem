@@ -9,10 +9,6 @@ import com.model.ModelLoginHistory;
 import com.model.ModelUser;
 import javax.swing.ImageIcon;
 
-/**
- *
- * @author konod
- */
 public class LoginHistoryDialog extends javax.swing.JDialog {
 
     /**

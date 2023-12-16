@@ -20,10 +20,6 @@ import javax.swing.JFileChooser;
 import javax.swing.border.EmptyBorder;
 import org.apache.commons.lang3.RandomStringUtils;
 
-/**
- *
- * @author konod
- */
 public class header extends javax.swing.JPanel {
 
     /**

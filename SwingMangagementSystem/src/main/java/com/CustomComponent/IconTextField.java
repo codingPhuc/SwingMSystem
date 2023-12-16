@@ -17,10 +17,7 @@ import javax.swing.JTextField;
 
 import javax.swing.ImageIcon;
 import javax.swing.border.EmptyBorder;
-/**
- *
- * @author konod
- */
+
 public class IconTextField extends JTextField {
     private boolean isFocused = false;
     private final Color focusBorderColor = Color.BLUE;

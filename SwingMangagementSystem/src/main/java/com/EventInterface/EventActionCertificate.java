@@ -6,10 +6,7 @@ package com.EventInterface;
 
 import com.model.ModelCertificate;
 
-/**
- *
- * @author konod
- */
+
 public interface EventActionCertificate {
 
     void delete(ModelCertificate certificate);

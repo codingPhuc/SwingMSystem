@@ -25,10 +25,7 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CreationHelper;
-/**
- *
- * @author konod
- */
+
 public class StudentDetail extends javax.swing.JDialog {
 
     /**

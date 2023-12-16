@@ -45,10 +45,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 
-/**
- *
- * @author konod
- */
 public class ReportPanel extends javax.swing.JPanel {
     
     

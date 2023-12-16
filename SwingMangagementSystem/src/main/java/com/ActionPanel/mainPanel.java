@@ -8,10 +8,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import javax.swing.border.EmptyBorder;
 
-/**
- *
- * @author konod
- */
 public class mainPanel extends javax.swing.JPanel {
 
     /**

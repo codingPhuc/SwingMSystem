@@ -4,10 +4,7 @@
  */
 package com.MainComponet;
 
-/**
- *
- * @author konod
- */
+
 public class NewJPanel extends javax.swing.JPanel {
 
     /**

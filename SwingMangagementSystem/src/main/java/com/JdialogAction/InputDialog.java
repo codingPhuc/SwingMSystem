@@ -22,10 +22,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.xmlbeans.impl.xb.xsdschema.Attribute;
 
 
-/**
- *
- * @author konod
- */
+
 public class InputDialog extends javax.swing.JDialog {
 
     /**

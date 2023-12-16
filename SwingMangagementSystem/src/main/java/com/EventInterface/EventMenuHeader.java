@@ -6,10 +6,7 @@ package com.EventInterface;
 
 import java.awt.Component;
 
-/**
- *
- * @author konod
- */
+
 public interface EventMenuHeader {
     public boolean menuPressed(Component com, boolean open);
     

@@ -17,10 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-/**
- *
- * @author konod
- */
+
 public class CustomTextField extends JTextField {
 
     

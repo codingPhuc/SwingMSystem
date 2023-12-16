@@ -4,10 +4,7 @@
  */
 package com.ActionPanel;
 
-/**
- *
- * @author konod
- */
+
 public class HomePanel extends javax.swing.JPanel {
 
     /**

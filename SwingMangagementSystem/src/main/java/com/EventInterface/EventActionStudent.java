@@ -6,10 +6,7 @@ package com.EventInterface;
 
 import com.model.ModelStudent;
 
-/**
- *
- * @author konod
- */
+
 public interface EventActionStudent {
      public void delete(ModelStudent student);
 

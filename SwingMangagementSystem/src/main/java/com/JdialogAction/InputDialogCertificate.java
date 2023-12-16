@@ -16,10 +16,7 @@ import javax.swing.text.DefaultFormatterFactory;
 
 import javax.swing.text.NumberFormatter;
 
-/**
- *
- * @author konod
- */
+
 public class InputDialogCertificate extends javax.swing.JDialog {
 
     /**

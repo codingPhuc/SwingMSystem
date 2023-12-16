@@ -4,10 +4,6 @@
  */
 package com.model;
 
-/**
- *
- * @author konod
- */
 
 
 import com.EventInterface.EventActionCertificate;

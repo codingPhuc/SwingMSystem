@@ -20,10 +20,7 @@ import javax.swing.SwingUtilities;
 
 import fbr.FancyBorderRadius;
 
-/**
- *
- * @author RAVEN
- */
+
 public class Background extends JComponent {
 
     public Component getBlur() {

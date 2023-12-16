@@ -4,10 +4,7 @@
  */
 package com.model;
 
-/**
- *
- * @author konod
- */
+
 
 import com.EventInterface.EventActionCertificate;
 import java.time.LocalDate;
