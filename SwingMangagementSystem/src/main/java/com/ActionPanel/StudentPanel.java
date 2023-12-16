@@ -761,6 +761,8 @@ public class StudentPanel extends javax.swing.JPanel {
                 int startYear = 0;
                 int endYear = 0;
                 String phone = "";
+//                System.out.println(eq) ;
+//                System.out.println(major) ;
 
                 XSSFCell startYearCell = excelRow.getCell(startYearIndex);
                 if (startYearCell != null) {
