@@ -212,7 +212,7 @@ public class StudentPanel extends javax.swing.JPanel {
         jPanel3.add(MAJORCOMBOBOX);
 
         QUALITYCOMBOBOX.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "REGULAR QUALITY", "JOINT PROGRAM", "HIGH QUALITY" }));
-        QUALITYCOMBOBOX.setPreferredSize(new java.awt.Dimension(72, 50));
+//        QUALITYCOMBOBOX.setPreferredSize(new java.awt.Dimension(72, 50));
         QUALITYCOMBOBOX.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 QUALITYCOMBOBOXActionPerformed(evt);
